@@ -1,4 +1,4 @@
-namespace App;
+// namespace App;
 
 interface ITradeStatus
 {

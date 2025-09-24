@@ -13,9 +13,13 @@ class User : IUser // Class User med Interface IUser
     }
     
     // Return TRUE IF username && password is correct.
-    public bool TryLogin(string username, string password)
+    public bool TryLogin(string email, string password)
     {
-        return username == Username && password == _password;
+        return email == Email && password == _password;
     }
-
+    public void Get()
+    {
+        Console.WriteLine("user: " + Email + " Pass: " + _password);
+    }
+    public 
 }
