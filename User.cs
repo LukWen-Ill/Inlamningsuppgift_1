@@ -6,12 +6,12 @@ class User : IUser // Class User med Interface IUser
     string _password; //Private (kan endast läsas i klassen)
 
     // Konstruktor
-    public User (string email, string password)
+    public User(string email, string password)
     {
         Email = email;
         _password = password;
     }
-    
+
     // Return TRUE IF username && password is correct.
     public bool TryLogin(string email, string password)
     {
@@ -19,7 +19,10 @@ class User : IUser // Class User med Interface IUser
     }
     public void Get()
     {
-        Console.WriteLine("user: " + Email + " Pass: " + _password);
+        Console.WriteLine("-    user: " + Email + " Pass: " + _password);
     }
-    public 
+    public bool TryUsername(string email)
+    {
+        return email == Email;
+    }
 }

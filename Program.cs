@@ -27,9 +27,11 @@ using App;
 
 
 //Uppstarts variabler
-List<User> users = new List <User>(); //Skapar en lista med users från klassen User
+List<User> users = new List<User>(); //Skapar en lista med users från klassen User
 User? active_user = null;
 bool running = true;
+// string input_username;
+// string input_password;
 
 // Hårdkodade användare 
 users.Add(new User("LUKAS", "LÖSENORD"));
@@ -38,76 +40,87 @@ users.Add(new User("Max", "123"));
 
 
 
-Console.WriteLine("Welcome to TRADE SYSTEM");
-Console.WriteLine("Login or Create Account");
-Console.WriteLine("1. Login");
-Console.WriteLine("2. Create Account");
 
-while(running)
+
+while (running)
 {
 
-switch(Console.ReadLine())
-{
+    Console.WriteLine("Welcome to TRADE SYSTEM");
+    Console.WriteLine("Login or Create Account");
+    Console.WriteLine("1. Login");
+    Console.WriteLine("2. Create Account");
+    switch (Console.ReadLine())
+    {
+        case "1":
+            //  Körs om active_user = null (EJ inloggad)
+            if (active_user == null)
+            {
+                Console.Write("Please Enter Email: ");
+                string input_login_u = Console.ReadLine();
+                Console.Write("Please Enter Password: ");
+                string input_login_p = Console.ReadLine();
 
-    case "1":
-    //  Körs om active_user = null (EJ inloggad)
-        if (active_user == null)   
-        {
+                //Try Login med input
+                foreach (User user in users)
+                {
+                    if (user.TryLogin(input_login_u, input_login_p))
+                    {
+                        Console.WriteLine("Login Successful");
+                        //PRESS ENTER TO CONTINUE
+
+                        active_user = user;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Invalid login details");
+                        //PRESS ENTER TO CONTINUE
+                        break;
+                    }
+                }
+                break;
+            }
+            //  Annars:
+            else Console.WriteLine("A user is already logged in");
+            break;
+
+        case "2":
+            //  
+            Console.WriteLine("Creating Account");
             Console.Write("Please Enter Email: ");
             string input_username = Console.ReadLine();
             Console.Write("Please Enter Password: ");
             string input_password = Console.ReadLine();
 
-            //Try Login med input
-            foreach(User user in users)
+            foreach (User user in users)
             {
-                if (user.TryLogin(input_username, input_password))
+                if (!user.TryUsername(input_username))
                 {
+                    users.Add(new User(input_username, input_password));
+                    Console.WriteLine("A User Was Created Successfully");
+                    //PRESS ENTER TO CONTINUE
+
                     active_user = user;
                     break;
                 }
                 else
                 {
-                    Console.WriteLine("")
+                    Console.WriteLine();
+                    break;
                 }
             }
             break;
-        }
-    //  Annars:
-        else Console.WriteLine("A user is already logged in")
-        break;
-
-    case "2":
-    //  
-        Console.WriteLine("Creating Account");
-        Console.Write("Please Enter Email: ");
-        input_username = Console.ReadLine();
-        Console.Write("Please Enter Password: ");
-        input_password = Console.ReadLine();
-        
-        foreach(User user in users)
-            {
-                if (user.TryUsername(input_username))
-                {
-                    users.Add(new User(input_username, input_password));
-                    Console.WriteLine("A User Was Created Successfully")
-                    active_user = user;
-                    break;
-                }
-                else 
-            }
-        break;
-}
+    }
 
 
 
-// VISAR ANVÄNDARE FELHANTERING
-Console.WriteLine("FELHANTERAR");
-foreach (User user in users)
-{
-    user.Get();
-    // TRYLOGING FUNKTION 
-    // Console.WriteLine(users.TryLogin("LUKAS", "LÖSENORD"));
-    // Console.WriteLine(users.TryLogin("LUKAS", "lösenord"));
-}
+    // VISAR ANVÄNDARE FELHANTERING
+    Console.WriteLine("-    FELHANTERAR");
+    foreach (User user in users)
+    {
+        user.Get();
+        // TRYLOGING FUNKTION 
+        // Console.WriteLine(users.TryLogin("LUKAS", "LÖSENORD"));
+        // Console.WriteLine(users.TryLogin("LUKAS", "lösenord"));
+    }
 }
