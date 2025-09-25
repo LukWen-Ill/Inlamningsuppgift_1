@@ -25,6 +25,8 @@
 */
 using App;
 
+//  Console.Clear med catch för debuggern
+try { Console.Clear(); } catch { }
 
 //Uppstarts variabler
 List<User> users = new List<User>(); //Skapar en lista med users från klassen User
@@ -50,11 +52,13 @@ while (running)
     Console.WriteLine("1. Login");
     Console.WriteLine("2. Create Account");
     switch (Console.ReadLine())
+    try { Console.Clear(); } catch { }
     {
-        case "1":
+        case "1": // Login
             //  Körs om active_user = null (EJ inloggad)
             if (active_user == null)
             {
+                Console.WriteLine("*** Log in ***")
                 Console.Write("Please Enter Email: ");
                 string input_login_u = Console.ReadLine();
                 Console.Write("Please Enter Password: ");
@@ -66,7 +70,11 @@ while (running)
                     if (user.TryLogin(input_login_u, input_login_p))
                     {
                         Console.WriteLine("Login Successful");
-                        //PRESS ENTER TO CONTINUE
+
+                        Console.WriteLine("Press ENTER to continue .. ");
+                        Console.ReadLine();
+                        try { Console.Clear(); } catch { }
+
 
                         active_user = user;
                         break;
@@ -84,7 +92,7 @@ while (running)
             else Console.WriteLine("A user is already logged in");
             break;
 
-        case "2":
+        case "2": // Register Account
             //  
             Console.WriteLine("Creating Account");
             Console.Write("Please Enter Email: ");
@@ -110,17 +118,16 @@ while (running)
                 }
             }
             break;
+        }
+
+
+        // VISAR ANVÄNDARE FELHANTERING
+        Console.WriteLine("-    FELHANTERAR");
+        foreach (User user in users)
+        {
+            user.Get();
+            // TRYLOGING FUNKTION 
+            // Console.WriteLine(users.TryLogin("LUKAS", "LÖSENORD"));
+            // Console.WriteLine(users.TryLogin("LUKAS", "lösenord"));
+        }
     }
-
-
-
-    // VISAR ANVÄNDARE FELHANTERING
-    Console.WriteLine("-    FELHANTERAR");
-    foreach (User user in users)
-    {
-        user.Get();
-        // TRYLOGING FUNKTION 
-        // Console.WriteLine(users.TryLogin("LUKAS", "LÖSENORD"));
-        // Console.WriteLine(users.TryLogin("LUKAS", "lösenord"));
-    }
-}
