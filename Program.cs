@@ -37,7 +37,7 @@ bool running = true;
 
 // Hårdkodade användare 
 users.Add(new User("LUKAS", "LÖSENORD"));
-users.Add(new User("Max", "123"));
+users.Add(new User("max", "123")); // Varför funkar inte siffror?
 
 
 
@@ -46,11 +46,13 @@ users.Add(new User("Max", "123"));
 
 while (running)
 {
+    try { Console.Clear(); } catch { } // aktivera när felhanteringen är klar
 
     Console.WriteLine("Welcome to TRADE SYSTEM");
     Console.WriteLine("Login or Create Account");
     Console.WriteLine("1. Login");
     Console.WriteLine("2. Create Account");
+    if (active_user != null) { Console.WriteLine("Logout"); }
     string input = Console.ReadLine();
     try { Console.Clear(); } catch { }
     switch (input)
@@ -68,6 +70,7 @@ while (running)
                 //Try Login med input
                 foreach (User user in users)
                 {
+                    Console.WriteLine(user.TryLogin(input_login_u, input_login_p));
                     if (user.TryLogin(input_login_u, input_login_p))
                     {
                         try { Console.Clear(); } catch { }
@@ -77,12 +80,10 @@ while (running)
                         Console.WriteLine();
                         Console.WriteLine("Press ENTER to continue .. ");
                         Console.ReadLine();
-                        try { Console.Clear(); } catch { }
-
-
                         active_user = user;
                         break;
                     }
+
                     else
                     {
                         try { Console.Clear(); } catch { }
@@ -98,9 +99,11 @@ while (running)
                 }
                 break;
             }
-            //  Annars:
+
             else
             {
+                try { Console.Clear(); } catch { }
+
                 Console.WriteLine("A user is already logged in");
 
                 Console.WriteLine();
@@ -110,7 +113,8 @@ while (running)
             }
 
         case "2": // Register Account
-                  //  
+            try { Console.Clear(); } catch { }
+
             Console.WriteLine("--- Create Account ---");
             Console.Write("Please Enter Email: ");
             string input_username = Console.ReadLine();
@@ -121,34 +125,38 @@ while (running)
             {
                 if (!user.TryUsername(input_username))
                 {
+                    try { Console.Clear(); } catch { }
+
                     users.Add(new User(input_username, input_password));
                     Console.WriteLine("A User Was Created Successfully");
-
+                    foreach (User user1 in users)
+                    {
+                        user1.Get();
+                    }
                     Console.WriteLine();
                     Console.WriteLine("Press ENTER to continue .. ");
                     Console.ReadLine();
 
-                    active_user = user;
                     break;
                 }
+
                 else
                 {
+                    try { Console.Clear(); } catch { }
+
                     Console.WriteLine("ANVÄNDARNAMN TAGET");
+
+                    Console.WriteLine();
+                    Console.WriteLine("Press ENTER to continue .. ");
+                    Console.ReadLine();
                     break;
 
                 }
             }
             break;
-    }
 
-
-    // VISAR ANVÄNDARE FELHANTERING
-    Console.WriteLine("-    FELHANTERAR");
-    foreach (User user in users)
-    {
-        user.Get();
-        // TRYLOGING FUNKTION 
-        // Console.WriteLine(users.TryLogin("LUKAS", "LÖSENORD"));
-        // Console.WriteLine(users.TryLogin("LUKAS", "lösenord"));
+        case "logout":
+            active_user = null;
+            break;
     }
 }
