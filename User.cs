@@ -1,6 +1,6 @@
 namespace App;
 
-class User : IUser // Class User med Interface IUser
+class User  // Class/objekt "User"
 {
     public string Email;
     string _password; //Private (kan endast läsas i klassen)
@@ -26,3 +26,4 @@ class User : IUser // Class User med Interface IUser
         return email == Email;
     }
 }
+
