@@ -51,14 +51,15 @@ while (running)
     Console.WriteLine("Login or Create Account");
     Console.WriteLine("1. Login");
     Console.WriteLine("2. Create Account");
-    switch (Console.ReadLine())
+    string input = Console.ReadLine();
     try { Console.Clear(); } catch { }
+    switch (input)
     {
         case "1": // Login
-            //  Körs om active_user = null (EJ inloggad)
+                  //  Körs om active_user = null (EJ inloggad)
             if (active_user == null)
             {
-                Console.WriteLine("*** Log in ***")
+                Console.WriteLine("--- Log in ---");
                 Console.Write("Please Enter Email: ");
                 string input_login_u = Console.ReadLine();
                 Console.Write("Please Enter Password: ");
@@ -69,8 +70,11 @@ while (running)
                 {
                     if (user.TryLogin(input_login_u, input_login_p))
                     {
+                        try { Console.Clear(); } catch { }
+                        Console.WriteLine(user.TryLogin(input_login_u, input_login_p));
                         Console.WriteLine("Login Successful");
 
+                        Console.WriteLine();
                         Console.WriteLine("Press ENTER to continue .. ");
                         Console.ReadLine();
                         try { Console.Clear(); } catch { }
@@ -81,20 +85,33 @@ while (running)
                     }
                     else
                     {
+                        try { Console.Clear(); } catch { }
+
                         Console.WriteLine("Invalid login details");
-                        //PRESS ENTER TO CONTINUE
+
+                        Console.WriteLine();
+                        Console.WriteLine("Press ENTER to continue .. ");
+                        Console.ReadLine();
+
                         break;
                     }
                 }
                 break;
             }
             //  Annars:
-            else Console.WriteLine("A user is already logged in");
-            break;
+            else
+            {
+                Console.WriteLine("A user is already logged in");
+
+                Console.WriteLine();
+                Console.WriteLine("Press ENTER to continue .. ");
+                Console.ReadLine();
+                break;
+            }
 
         case "2": // Register Account
-            //  
-            Console.WriteLine("Creating Account");
+                  //  
+            Console.WriteLine("--- Create Account ---");
             Console.Write("Please Enter Email: ");
             string input_username = Console.ReadLine();
             Console.Write("Please Enter Password: ");
@@ -106,28 +123,32 @@ while (running)
                 {
                     users.Add(new User(input_username, input_password));
                     Console.WriteLine("A User Was Created Successfully");
-                    //PRESS ENTER TO CONTINUE
+
+                    Console.WriteLine();
+                    Console.WriteLine("Press ENTER to continue .. ");
+                    Console.ReadLine();
 
                     active_user = user;
                     break;
                 }
                 else
                 {
-                    Console.WriteLine();
+                    Console.WriteLine("ANVÄNDARNAMN TAGET");
                     break;
+
                 }
             }
             break;
-        }
-
-
-        // VISAR ANVÄNDARE FELHANTERING
-        Console.WriteLine("-    FELHANTERAR");
-        foreach (User user in users)
-        {
-            user.Get();
-            // TRYLOGING FUNKTION 
-            // Console.WriteLine(users.TryLogin("LUKAS", "LÖSENORD"));
-            // Console.WriteLine(users.TryLogin("LUKAS", "lösenord"));
-        }
     }
+
+
+    // VISAR ANVÄNDARE FELHANTERING
+    Console.WriteLine("-    FELHANTERAR");
+    foreach (User user in users)
+    {
+        user.Get();
+        // TRYLOGING FUNKTION 
+        // Console.WriteLine(users.TryLogin("LUKAS", "LÖSENORD"));
+        // Console.WriteLine(users.TryLogin("LUKAS", "lösenord"));
+    }
+}
