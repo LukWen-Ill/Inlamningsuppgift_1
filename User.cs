@@ -21,9 +21,9 @@ class User  // Class/objekt "User"
     {
         Console.WriteLine("-    user: " + Email + " Pass: " + _password);
     }
-    public bool TryUsername(string email)
+    public bool TryUsername(string input_username)
     {
-        return email == Email;
+        return input_username == Email;
     }
 }
 

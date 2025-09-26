@@ -41,128 +41,111 @@ users.Add(new User("max", "123")); // Varför funkar inte siffror?
 
 
 
-
-
 while (running)
+{
     if (active_user == null)
     {
-
+        try { Console.Clear(); } catch { } // aktivera när felhanteringen är klar
+        Console.WriteLine("Welcome to TRADE SYSTEM");
+        Console.WriteLine("Login or Create Account");
+        Console.WriteLine("1. Login");
+        Console.WriteLine("2. Create Account");
+        if (active_user != null) { Console.WriteLine("Logout"); }
+        string input = Console.ReadLine();
+        try { Console.Clear(); } catch { }
+        switch (input)
         {
-            try { Console.Clear(); } catch { } // aktivera när felhanteringen är klar
-
-            Console.WriteLine("Welcome to TRADE SYSTEM");
-            Console.WriteLine("Login or Create Account");
-            Console.WriteLine("1. Login");
-            Console.WriteLine("2. Create Account");
-            if (active_user != null) { Console.WriteLine("Logout"); }
-            string input = Console.ReadLine();
-            try { Console.Clear(); } catch { }
-            switch (input)
-            {
-                case "1": // Login
-                          //  Körs om active_user = null (EJ inloggad)
-                    if (active_user == null)
-                    {
-                        Console.WriteLine("--- Log in ---");
-                        Console.Write("Please Enter Email: ");
-                        string input_login_u = Console.ReadLine();
-                        Console.Write("Please Enter Password: ");
-                        string input_login_p = Console.ReadLine();
-
-                        //Try Login med input
-                        foreach (User user in users)
-                        {
-                            if (user.TryLogin(input_login_u, input_login_p))
-                            {
-                                try { Console.Clear(); } catch { }
-                                Console.WriteLine(user.TryLogin(input_login_u, input_login_p));
-                                Console.WriteLine("Login Successful");
-
-                                Console.WriteLine();
-                                Console.WriteLine("Press ENTER to continue .. ");
-                                Console.ReadLine();
-                                active_user = user;
-                                break;
-                            }
-
-                            else
-                            {
-                                try { Console.Clear(); } catch { }
-
-                                Console.WriteLine("Invalid login details");
-
-                                Console.WriteLine();
-                                Console.WriteLine("Press ENTER to continue .. ");
-                                Console.ReadLine();
-
-                                break;
-                            }
-                        }
-                        break;
-                    }
-
-                    else
-                    {
-                        try { Console.Clear(); } catch { }
-
-                        Console.WriteLine("A user is already logged in");
-
-                        Console.WriteLine();
-                        Console.WriteLine("Press ENTER to continue .. ");
-                        Console.ReadLine();
-                        break;
-                    }
-
-                case "2": // Register Account
-                    try { Console.Clear(); } catch { }
-
-                    Console.WriteLine("--- Create Account ---");
+            case "1": // Login
+                      //  Körs om active_user = null (EJ inloggad)
+                if (active_user == null)
+                {
+                    Console.WriteLine("--- Log in ---");
                     Console.Write("Please Enter Email: ");
-                    string input_username = Console.ReadLine();
+                    string input_login_u = Console.ReadLine();
                     Console.Write("Please Enter Password: ");
-                    string input_password = Console.ReadLine();
+                    string input_login_p = Console.ReadLine();
 
+                    //Try Login med input
                     foreach (User user in users)
                     {
-                        if (!user.TryUsername(input_username))
+                        if (user.TryLogin(input_login_u, input_login_p))
                         {
                             try { Console.Clear(); } catch { }
-
-                            users.Add(new User(input_username, input_password));
-                            Console.WriteLine("A User Was Created Successfully");
-                            foreach (User user1 in users)
-                            {
-                                user1.Get();
-                            }
+                            Console.WriteLine(user.TryLogin(input_login_u, input_login_p));
+                            Console.WriteLine("Login Successful");
                             Console.WriteLine();
                             Console.WriteLine("Press ENTER to continue .. ");
                             Console.ReadLine();
-
+                            active_user = user;
                             break;
                         }
-
                         else
                         {
                             try { Console.Clear(); } catch { }
-
-                            Console.WriteLine("ANVÄNDARNAMN TAGET");
-
+                            Console.WriteLine("Invalid login details");
                             Console.WriteLine();
                             Console.WriteLine("Press ENTER to continue .. ");
                             Console.ReadLine();
                             break;
-
                         }
                     }
                     break;
-
-                case "logout":
-                    active_user = null;
+                }
+                else
+                {
+                    try { Console.Clear(); } catch { }
+                    Console.WriteLine("A user is already logged in");
+                    Console.WriteLine();
+                    Console.WriteLine("Press ENTER to continue .. ");
+                    Console.ReadLine();
                     break;
-            }
+                }
+
+            case "2": // Register Account
+
+                try { Console.Clear(); } catch { }
+                Console.WriteLine("--- Create Account ---");
+                Console.Write("Please Enter Email: ");
+                string input_username = Console.ReadLine();
+                foreach (User user in users)//här testar vi alla users om användarnamnet är taget 
+                {
+                    if (user.TryUsername(input_username))
+                    {
+                        try { Console.Clear(); } catch { }
+                        Console.WriteLine("ANVÄNDARNAMN TAGET");
+                        Console.WriteLine();
+                        Console.WriteLine("Press ENTER to continue .. ");
+                        Console.ReadLine();
+                        ewr = false;
+                        break;
+                    }
+                    break;
+                }
+
+                // BEHÖVER BYGGAS VIDARE - BEHÖVER ETT STOP .
+
+                Console.Write("Please Enter Password: ");
+                string input_password = Console.ReadLine();
+
+
+                users.Add(new User(input_username, input_password));
+                Console.WriteLine("A User Was Created Successfully");
+                foreach (User user in users)
+                {
+                    user.Get();
+                }
+                Console.WriteLine();
+                Console.WriteLine("Press ENTER to continue .. ");
+                Console.ReadLine();
+
+                break;
+            case "logout":
+                active_user = null;
+                break;
         }
     }
-    else
-    {
-        Console.WriteLine("LOGGAD IN");
-    }
+}
+// else
+// {
+//     Console.WriteLine("LOGGAD IN");
+// }
