@@ -43,7 +43,7 @@ users.Add(new User("max", "123")); // Varför funkar inte siffror?
 
 while (running)
 {
-    if (active_user == null)
+    // if (active_user == null)
     {
         try { Console.Clear(); } catch { } // aktivera när felhanteringen är klar
         Console.WriteLine("Welcome to TRADE SYSTEM");
@@ -68,10 +68,11 @@ while (running)
                     //Try Login med input
                     foreach (User user in users)
                     {
+                        Console.WriteLine(user.TryLogin(input_login_u, input_login_p));
+
                         if (user.TryLogin(input_login_u, input_login_p))
                         {
                             try { Console.Clear(); } catch { }
-                            Console.WriteLine(user.TryLogin(input_login_u, input_login_p));
                             Console.WriteLine("Login Successful");
                             Console.WriteLine();
                             Console.WriteLine("Press ENTER to continue .. ");
@@ -79,17 +80,19 @@ while (running)
                             active_user = user;
                             break;
                         }
-                        else
-                        {
-                            try { Console.Clear(); } catch { }
-                            Console.WriteLine("Invalid login details");
-                            Console.WriteLine();
-                            Console.WriteLine("Press ENTER to continue .. ");
-                            Console.ReadLine();
-                            break;
-                        }
+
+                    }
+                    if (active_user == null)
+                    {
+                        try { Console.Clear(); } catch { }
+                        Console.WriteLine("Invalid login details");
+                        Console.WriteLine();
+                        Console.WriteLine("Press ENTER to continue .. ");
+                        Console.ReadLine();
+                        break;
                     }
                     break;
+
                 }
                 else
                 {
@@ -102,7 +105,6 @@ while (running)
                 }
 
             case "2": // Register Account
-
                 try { Console.Clear(); } catch { }
                 Console.WriteLine("--- Create Account ---");
                 Console.Write("Please Enter Email: ");
@@ -116,12 +118,9 @@ while (running)
                         Console.WriteLine();
                         Console.WriteLine("Press ENTER to continue .. ");
                         Console.ReadLine();
-                        ewr = false;
                         break;
                     }
-                    break;
                 }
-
                 // BEHÖVER BYGGAS VIDARE - BEHÖVER ETT STOP .
 
                 Console.Write("Please Enter Password: ");
