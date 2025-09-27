@@ -105,6 +105,7 @@ while (running)
                 }
 
             case "2": // Register Account
+                bool is_viable = true;
                 try { Console.Clear(); } catch { }
                 Console.WriteLine("--- Create Account ---");
                 Console.Write("Please Enter Email: ");
@@ -114,29 +115,30 @@ while (running)
                     if (user.TryUsername(input_username))
                     {
                         try { Console.Clear(); } catch { }
-                        Console.WriteLine("ANVÄNDARNAMN TAGET");
+                        Console.WriteLine("Username: " + input_username + " is already in use.");
                         Console.WriteLine();
                         Console.WriteLine("Press ENTER to continue .. ");
                         Console.ReadLine();
+                        is_viable = false;
                         break;
                     }
                 }
-                // BEHÖVER BYGGAS VIDARE - BEHÖVER ETT STOP .
-
-                Console.Write("Please Enter Password: ");
-                string input_password = Console.ReadLine();
-
-
-                users.Add(new User(input_username, input_password));
-                Console.WriteLine("A User Was Created Successfully");
-                foreach (User user in users)
+                if (is_viable)
                 {
-                    user.Get();
+                    // BEHÖVER BYGGAS VIDARE - BEHÖVER ETT STOP .
+                    Console.Write("Please Enter Password: ");
+                    string input_password = Console.ReadLine();
+                    users.Add(new User(input_username, input_password));
+                    Console.WriteLine("A User Was Created Successfully");
+                    foreach (User user in users)
+                    {
+                        user.Get();
+                    }
+                    Console.WriteLine();
+                    Console.WriteLine("Press ENTER to continue .. ");
+                    Console.ReadLine();
+                    break;
                 }
-                Console.WriteLine();
-                Console.WriteLine("Press ENTER to continue .. ");
-                Console.ReadLine();
-
                 break;
             case "logout":
                 active_user = null;
