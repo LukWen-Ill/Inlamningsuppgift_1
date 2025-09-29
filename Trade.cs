@@ -1,13 +1,15 @@
 // namespace App;
 
+using App;
+
 class Trade
 {
-    public string Sender;
-    public string Reciever;
-    public string Items;
+    public User Sender;
+    public User Reciever;
+    public Item Items;
 
     // Konstruktor  
-    public Trade(string sender, string reciever, string items)
+    public Trade(User sender, User reciever, Item items)
     {
         Sender = sender;
         Reciever = reciever;

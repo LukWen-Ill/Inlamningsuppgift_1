@@ -17,7 +17,7 @@ class Item
     }
     public void Get()
     {
-        Console.WriteLine("Item Name: " + Name + "     Owner: " + Owner + "\nItem Description: " + Description);
+        Console.WriteLine("Item Name: " + Name + "\n" + "   Description: " + Description + "\n" + "   Owner: " + Owner.Email + "\n");
     }
 }
 
