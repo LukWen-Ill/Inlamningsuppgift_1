@@ -21,17 +21,32 @@ using App;
 //  Console.Clear med catch för debuggern
 try { Console.Clear(); } catch { }
 
-//Uppstarts variabler
+User testUser1 = new User("Havash", "1");
+User testUser2 = new User("Therese", "1");
+User testUser3 = new User("Lukas", "1");
+
+// Uppstarts variabler
 List<User> users = new List<User>(); //Skapar en lista med users från klassen User
 List<Item> items = new List<Item>(); //Skapar en lista med users från klassen User
 User? active_user = null;
 bool running = true;
 
+// Hårdkodade användare från test123
+users.Add(testUser1);
+users.Add(testUser2);
+users.Add(testUser3);
+
+// Hårdkodade ITEMS tillhörande TESTUSER 1 2 3
+items.Add(new Item("Stol", "Grön färg, lite sliten.", testUser1));
+items.Add(new Item("iPhone 13 Pro Max", "Sprucken skärm.", testUser2));
+items.Add(new Item("Barnsäng", "90x90 i topp skick.", testUser3));
+
+
 
 
 // Hårdkodade användare 
 users.Add(new User("LUKAS", "LÖSENORD"));
-users.Add(new User("max", "123")); // Varför funkar inte siffror?
+users.Add(new User("max", "123"));
 
 
 
@@ -39,8 +54,8 @@ while (running)
 {
     {
         try { Console.Clear(); } catch { } // aktivera när felhanteringen är klar
-        Console.WriteLine("Welcome to TRADE SYSTEM");
-        Console.WriteLine("Login or Create Account");
+        Console.WriteLine("Welcome to Trade System");
+        Console.WriteLine("Please ");
         Console.WriteLine("1. Create Account");
         if (active_user == null) { Console.WriteLine("2. Login"); }
         else { Console.WriteLine("2. Trade"); }
@@ -139,18 +154,68 @@ while (running)
                 //  Körs om active_user = null (EJ inloggad)
                 else
                 {
+                    Console.WriteLine("Welcome to Trade System");
+                    Console.WriteLine("Logged in as: " + active_user.Email);
+                    Console.WriteLine("1. All Items"); // 
+                    Console.WriteLine("2. My Items"); // 
+                    Console.WriteLine("3. Trade Requests"); // Accept/deny/pending // browse
+                    input = Console.ReadLine();
+                    switch (input)
+                    {
+                        case "1":
+                            // view alla items
+                            foreach (Item item in items)
+                            {
+                                item.Get();
+                                Console.WriteLine("")
+                            }
+                            Console.WriteLine();
+                            Console.WriteLine("Press ENTER to continue .. ");
+                            Console.ReadLine();
+                            break;
+                        case "2":
+                            // kolla egna items
+                            int count = 1;
+                            foreach (Item item in items)
+                            {
+                                if (item.Owner == active_user)
+                                {
+                                    Console.Write(count + ". ");
+                                    item.Get();
+                                    count++;
+                                }
+                            }
+                            Console.WriteLine();
+                            Console.WriteLine("Press ENTER to continue .. ");
+                            Console.ReadLine();
+                            break;
+                        case "3":
+                            // kolla trade requests (lista)
+                            Console.WriteLine("Trade Requests");
+                            Console.WriteLine("Logged in as: " + active_user.Email);
+                            Console.WriteLine("1. "); // 
+                            Console.WriteLine("2. "); // 
+                            Console.WriteLine("3. "); // Accept/deny/pending // browse
+                            input = Console.ReadLine();
+                            switch (input)
+                            {
 
+                            }
+                            break;
+
+                    }
+                    break;
                 }
-            case "logout": // onödig
+            case "logout":
                 active_user = null;
                 break;
         }
     }
-    // A user needs to be able to upload information about the item they wish to trade.
-    // A user needs to be able to browse a list of other users items. item.get() + exception of exception list
-    // A user needs to be able to request a trade for other users items.
-    // A user needs to be able to browse trade requests.
-    // A user needs to be able to accept a trade request.
-    // A user needs to be able to deny a trade request.
-    // A user needs to be able to browse completed requests.
 }
+// A user needs to be able to upload information about the item they wish to trade.
+// A user needs to be able to browse a list of other users items. item.get() + exception of exception list
+// A user needs to be able to request a trade for other users items.
+// A user needs to be able to browse trade requests.
+// A user needs to be able to accept a trade request.
+// A user needs to be able to deny a trade request.
+// A user needs to be able to browse completed requests.

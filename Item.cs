@@ -1,14 +1,30 @@
 // namespace App;
 
+using App;
+
 class Item
 {
     public string Name;
     public string Description;
+    public User Owner;
 
     // Konstruktor
-    public Item (string name, string description)
+    public Item(string name, string description, User owner)
     {
         Name = name;
         Description = description;
+        Owner = owner;
+    }
+    public void Get()
+    {
+        Console.WriteLine("Item Name: " + Name + "     Owner: " + Owner + "\nItem Description: " + Description);
     }
 }
+
+// A user needs to be able to upload information about the item they wish to trade.
+// A user needs to be able to browse a list of other users items. item.get() + exception of exception list
+// A user needs to be able to request a trade for other users items.
+// A user needs to be able to browse trade requests.
+// A user needs to be able to accept a trade request.
+// A user needs to be able to deny a trade request.
+// A user needs to be able to browse completed requests.
