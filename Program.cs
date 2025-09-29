@@ -167,7 +167,7 @@ while (running)
                             foreach (Item item in items)
                             {
                                 item.Get();
-                                Console.WriteLine("")
+                                Console.WriteLine("");
                             }
                             Console.WriteLine();
                             Console.WriteLine("Press ENTER to continue .. ");
