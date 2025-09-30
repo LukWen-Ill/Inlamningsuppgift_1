@@ -34,6 +34,9 @@ User? active_user = null;
 Trade? active_trade = null;
 
 bool main_meny_loop = true;
+bool trade_system_loop = true;
+bool trade_system_request_loop = true;
+
 
 // Hårdkodade användare från test123
 users.Add(testUser1);
@@ -56,27 +59,35 @@ users.Add(new User("max", "123"));
 
 while (main_meny_loop)
 {
+
+    try { Console.Clear(); } catch { } // aktivera när felhanteringen är klar
+    Console.WriteLine("---Trading System---");
+    Console.WriteLine("");
+    if (active_user != null) { Console.WriteLine("Logged in as: " + active_user.Email); } // Ternery
+    Console.WriteLine("1. Create new Account");
+    if (active_user == null) { Console.WriteLine("2. Login"); }
+    else { Console.WriteLine("2. Trade"); }
+    if (active_user != null) { Console.WriteLine("\nLogout"); }
+    string input = Console.ReadLine();
+    try { Console.Clear(); } catch { }
+    switch (input)
     {
-        try { Console.Clear(); } catch { } // aktivera när felhanteringen är klar
-        Console.WriteLine("---Trading System---");
-        Console.WriteLine("");
-        if (active_user != null) { Console.WriteLine("Logged in as: " + active_user.Email); } // Ternery
-        Console.WriteLine("1. Create new Account");
-        if (active_user == null) { Console.WriteLine("2. Login"); }
-        else { Console.WriteLine("2. Trade"); }
-        if (active_user != null) { Console.WriteLine("Logout"); }
-        string input = Console.ReadLine();
-        try { Console.Clear(); } catch { }
-        switch (input)
-        {
-            case "1": // Register Account
-                bool is_viable = true;
-                try { Console.Clear(); } catch { }
-                Console.WriteLine("---Trading System---");
-                Console.WriteLine("");
-                Console.WriteLine("---Create Account---");
-                Console.Write("Please Enter Email: ");
-                string input_username = Console.ReadLine();
+        case "1": // Register Account
+            bool is_viable = true;
+            try { Console.Clear(); } catch { }
+            Console.WriteLine("---Trading System---");
+            Console.WriteLine("");
+            Console.WriteLine("---Create Account---");
+            Console.Write("Please Enter Email: ");
+            Console.WriteLine("");
+            Console.WriteLine("cancel");
+            string input_username = Console.ReadLine();
+            if (input_username == "cancel")
+            {
+                break;
+            }
+            else
+            {
                 foreach (User user in users)//här testar vi alla users om användarnamnet är taget 
                 {
                     if (user.TryUsername(input_username))
@@ -93,101 +104,85 @@ while (main_meny_loop)
                         break;
                     }
                 }
-                if (is_viable)
+            }
+            if (is_viable)
+            {
+                Console.Write("Please Enter Password: ");
+                string input_password = Console.ReadLine();
+                users.Add(new User(input_username, input_password));
+                Console.WriteLine("\nA User Was Created Successfully");
+                Console.WriteLine();
+                Console.WriteLine("Press ENTER to continue .. ");
+                Console.ReadLine();
+                break;
+            }
+            break;
+        case "2": // Login
+            if (active_user == null) // Login visas i menyn
+            {
+                Console.WriteLine("---Trading System---");
+                Console.WriteLine("");
+                Console.WriteLine("---Log in---");
+                Console.Write("Please Enter Email: ");
+                string input_login_u = Console.ReadLine();
+                Console.Write("Please Enter Password: ");
+                string input_login_p = Console.ReadLine();
+                foreach (User user in users) //Try Login med input
                 {
-                    Console.Write("Please Enter Password: ");
-                    string input_password = Console.ReadLine();
-                    users.Add(new User(input_username, input_password));
-                    Console.WriteLine("\nA User Was Created Successfully");
+                    Console.WriteLine(user.TryLogin(input_login_u, input_login_p)); // ???
+                    if (user.TryLogin(input_login_u, input_login_p))
+                    {
+                        active_user = user;
+                        break;
+                    }
+                }
+                if (active_user == null)
+                {
+                    try { Console.Clear(); } catch { }
+                    Console.WriteLine("---Trading System---");
+                    Console.WriteLine("");
+                    Console.WriteLine("Invalid login details");
                     Console.WriteLine();
                     Console.WriteLine("Press ENTER to continue .. ");
                     Console.ReadLine();
                     break;
                 }
-                break;
-            case "2": // Login
-                if (active_user == null)
-                {
-                    //  Körs om active_user = null (EJ inloggad)
-                    if (active_user == null)
-                    {
-                        Console.WriteLine("---Trading System---");
-                        Console.WriteLine("");
-                        Console.WriteLine("---Log in---");
-                        Console.Write("Please Enter Email: ");
-                        string input_login_u = Console.ReadLine();
-                        Console.Write("Please Enter Password: ");
-                        string input_login_p = Console.ReadLine();
-
-                        //Try Login med input
-                        foreach (User user in users)
-                        {
-                            Console.WriteLine(user.TryLogin(input_login_u, input_login_p));
-
-                            if (user.TryLogin(input_login_u, input_login_p))
-                            {
-                                try { Console.Clear(); } catch { }
-                                Console.WriteLine("---Trading System---");
-                                Console.WriteLine("");
-                                Console.WriteLine("Login Successful");
-                                Console.WriteLine();
-                                Console.WriteLine("Press ENTER to continue .. ");
-                                Console.ReadLine();
-                                active_user = user;
-                                break;
-                            }
-
-                        }
-                        if (active_user == null)
-                        {
-                            try { Console.Clear(); } catch { }
-                            Console.WriteLine("Invalid login details");
-                            Console.WriteLine();
-                            Console.WriteLine("Press ENTER to continue .. ");
-                            Console.ReadLine();
-                            break;
-                        }
-                        break;
-
-                    }
-                    else
-                    {
-                        try { Console.Clear(); } catch { }
-                        Console.WriteLine("A user is already logged in");
-                        Console.WriteLine();
-                        Console.WriteLine("Press ENTER to continue .. ");
-                        Console.ReadLine();
-                        break;
-                    }
-                }
-
-                //  Körs om active_user = null (EJ inloggad)
                 else
                 {
-                    bool trade_system_loop = true;
-                    while (trade_system_loop)
+                    try { Console.Clear(); } catch { }
+                    Console.WriteLine("---Trading System---");
+                    Console.WriteLine("");
+                    Console.WriteLine("Login Successful");
+                    Console.WriteLine();
+                    Console.WriteLine("Press ENTER to continue .. ");
+                    Console.ReadLine();
+                }
+                break;
+            }
+            else //  Körs om active_user != null (INLOGGAD)
+            {
+                trade_system_loop = true;
+                while (trade_system_loop)
+                {
+                    try { Console.Clear(); } catch { }
+                    Console.WriteLine("---Trade System---");
+                    Console.WriteLine("");
+                    Console.WriteLine("Logged in as: " + active_user.Email);
+                    Console.WriteLine("1. Browser Items"); // Show all items > Enter Index of Item > Send request 
+                    Console.WriteLine("2. My Items"); // Show all items > Add/remove > (request this item)
+                    Console.WriteLine("3. Requests"); // Show all requests > enter index of item wish to modify > Accept/deny If not pending  
+                    Console.WriteLine("0. Previous Menu");
+
+                    input = Console.ReadLine();
+                    trade_system_request_loop = true;
+                    while (trade_system_request_loop)
                     {
-
-                        Console.WriteLine("---Trade System---");
-                        Console.WriteLine("Logged in as: " + active_user.Email);
-                        Console.WriteLine("1. Browser Items"); // Show all items > Enter Index of Item > Send request 
-                        Console.WriteLine("2. My Items"); // Show all items > Add/remove > (request this item)
-                        Console.WriteLine("3. Requests"); // Show all requests > enter index of item wish to modify > Accept/deny If not pending  
-                        Console.WriteLine("0. Previous Menu");
-
-                        input = Console.ReadLine();
                         switch (input)
                         {
                             case "1": // view all items
                                 try { Console.Clear(); } catch { }
-
-                                Console.WriteLine("---Trade Menu---");
-                                Console.WriteLine("1. Request Trade");
-                                Console.WriteLine("2. Previous Menu");
-                                Console.WriteLine("Press ENTER to continue .. ");
-                                Console.WriteLine();
-
                                 Console.WriteLine("---Trade feed---");
+                                Console.WriteLine("");
                                 int item_index = 1;
                                 foreach (Item item in items)
                                 {
@@ -195,17 +190,19 @@ while (main_meny_loop)
                                     item.Get();
                                     item_index++;
                                 }
-
-                                input = Console.ReadLine();
-                                switch (input)
+                                Console.WriteLine("");
+                                Console.WriteLine("---Trade Menu---");
+                                Console.WriteLine("1. Request Trade");
+                                Console.WriteLine("2. Previous Menu");
+                                string input_2 = Console.ReadLine();
+                                switch (input_2)
                                 {
                                     case "1": // request trade
-
-                                        //vilket item vill du skicka en request om 
-                                        // confirm
-                                        // skicka request om trade
+                                              //vilket item vill du skicka en request om 
+                                              // confirm
+                                              // skicka request om trade
                                         Console.WriteLine("Enter # of Trade");
-                                        input = Console.ReadLine();
+                                        input_2 = Console.ReadLine();
                                         int.TryParse(input, out int int_input);
                                         int count = 1; //räknare för att få fram vilket index som trade ligger på ( Istället för Metoden IndexOf)
                                         foreach (Item item in items)
@@ -221,11 +218,10 @@ while (main_meny_loop)
                                             }
                                         }
                                         break;
-
+                                    case "2": // back to prev menu
+                                        trade_system_request_loop = false;
+                                        break;
                                 }
-                                Console.WriteLine();
-                                Console.WriteLine("Press ENTER to continue .. ");
-                                Console.ReadLine();
                                 break;
                             case "2": // kolla egna items
                                 try { Console.Clear(); } catch { }
@@ -239,13 +235,18 @@ while (main_meny_loop)
                                         item_index++;
                                     }
                                 }
+
                                 Console.WriteLine();
                                 Console.WriteLine("Press ENTER to continue .. ");
                                 Console.ReadLine();
                                 break;
                             case "3": // kolla trade requests (lista)
                                 try { Console.Clear(); } catch { }
-                                Console.WriteLine("Trade Requests");
+                                foreach (Trade trade in trades)
+                                {
+                                    trade.Get();
+                                }
+                                Console.WriteLine("---Trade Requests---");
                                 Console.WriteLine("Logged in as: " + active_user.Email);
                                 Console.WriteLine("1. Send trade"); // 
                                 Console.WriteLine("2. View requests"); // 
@@ -261,12 +262,12 @@ while (main_meny_loop)
                                 break;
                         }
                     }
-                    break;
                 }
-            case "logout":
-                active_user = null;
                 break;
-        }
+            }
+        case "logout":
+            active_user = null;
+            break;
     }
 }
 // A user needs to be able to upload information about the item they wish to trade.

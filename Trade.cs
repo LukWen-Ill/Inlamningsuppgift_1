@@ -16,6 +16,13 @@ class Trade
         Items = items;
     }
 
+    public void Get()
+    {
+        Console.WriteLine("Sender: " + Sender.Email);
+        Console.WriteLine("Reciever: " + Reciever.Email);
+        Console.WriteLine("Items: " + Items.Name);
+    }
+
 
     // public Status GetStatus(string sender, string reciever, string item)
     // {
