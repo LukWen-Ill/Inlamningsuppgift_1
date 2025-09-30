@@ -68,7 +68,8 @@ while (main_meny_loop)
     if (active_user == null) { Console.WriteLine("2. Login"); }
     else { Console.WriteLine("2. Trade"); }
     if (active_user != null) { Console.WriteLine("\nLogout"); }
-    string input = Console.ReadLine();
+    string input = "";
+    input = Console.ReadLine();
     try { Console.Clear(); } catch { }
     switch (input)
     {
@@ -81,7 +82,8 @@ while (main_meny_loop)
             Console.Write("Please Enter Email: ");
             Console.WriteLine("");
             Console.WriteLine("cancel");
-            string input_username = Console.ReadLine();
+            string input_username = "";
+            input_username = Console.ReadLine();
             if (input_username == "cancel")
             {
                 break;
@@ -108,7 +110,8 @@ while (main_meny_loop)
             if (is_viable)
             {
                 Console.Write("Please Enter Password: ");
-                string input_password = Console.ReadLine();
+                string input_password = "";
+                input_password = Console.ReadLine();
                 users.Add(new User(input_username, input_password));
                 Console.WriteLine("\nA User Was Created Successfully");
                 Console.WriteLine();
@@ -124,9 +127,11 @@ while (main_meny_loop)
                 Console.WriteLine("");
                 Console.WriteLine("---Log in---");
                 Console.Write("Please Enter Email: ");
-                string input_login_u = Console.ReadLine();
+                string input_login_u = "";
+                input_login_u = Console.ReadLine();
                 Console.Write("Please Enter Password: ");
-                string input_login_p = Console.ReadLine();
+                string input_login_p = "";
+                input_login_p = Console.ReadLine();
                 foreach (User user in users) //Try Login med input
                 {
                     Console.WriteLine(user.TryLogin(input_login_u, input_login_p)); // ???
@@ -173,10 +178,11 @@ while (main_meny_loop)
                     Console.WriteLine("3. Requests"); // Show all requests > enter index of item wish to modify > Accept/deny If not pending  
                     Console.WriteLine("0. Previous Menu");
 
-                    input = Console.ReadLine();
                     trade_system_request_loop = true;
                     while (trade_system_request_loop)
                     {
+                        input = "";
+                        input = Console.ReadLine();
                         switch (input)
                         {
                             case "1": // view all items
@@ -190,36 +196,35 @@ while (main_meny_loop)
                                     item.Get();
                                     item_index++;
                                 }
-                                Console.WriteLine("");
                                 Console.WriteLine("---Trade Menu---");
                                 Console.WriteLine("1. Request Trade");
                                 Console.WriteLine("2. Previous Menu");
-                                string input_2 = Console.ReadLine();
-                                switch (input_2)
+                                input = "";
+                                input = Console.ReadLine();
+                                switch (input)
                                 {
                                     case "1": // request trade
                                               //vilket item vill du skicka en request om 
                                               // confirm
                                               // skicka request om trade
+                                        Console.WriteLine("---Trade Menu---");
                                         Console.WriteLine("Enter # of Trade");
-                                        input_2 = Console.ReadLine();
-                                        int.TryParse(input, out int int_input);
+                                        string input_index_of_item = "";
+                                        input_index_of_item = Console.ReadLine();
+                                        int.TryParse(input_index_of_item, out int int_input);
                                         int count = 1; //räknare för att få fram vilket index som trade ligger på ( Istället för Metoden IndexOf)
                                         foreach (Item item in items)
                                         {
-                                            if (count <= int_input)
+                                            if (count == int_input)
                                             {
-                                                string name_temp = item.Name; // sparar in variablerna från ITEM
-                                                string description_temp = item.Description;
-                                                User owner_temp = item.Owner;
-
-                                                Item active_Trade_temp = new Item(name_temp, description_temp, owner_temp); //Hämtar och sparar Item informationen
-                                                trades.Add(new Trade(active_user, owner_temp, active_Trade_temp)); // lägger till i en lista av aktiva trades
+                                                Item item_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
+                                                item_temp.Get();
                                             }
+                                            count++;
                                         }
+                                        // trades.Add(new Trade(active_user.Email, owner_temp.Email, active_Trade_temp)); // lägger till i en lista av aktiva trades
                                         break;
                                     case "2": // back to prev menu
-                                        trade_system_request_loop = false;
                                         break;
                                 }
                                 break;
@@ -235,7 +240,6 @@ while (main_meny_loop)
                                         item_index++;
                                     }
                                 }
-
                                 Console.WriteLine();
                                 Console.WriteLine("Press ENTER to continue .. ");
                                 Console.ReadLine();
@@ -251,6 +255,7 @@ while (main_meny_loop)
                                 Console.WriteLine("1. Send trade"); // 
                                 Console.WriteLine("2. View requests"); // 
                                 Console.WriteLine("3. "); // Accept/deny/pending // browse
+                                input = "";
                                 input = Console.ReadLine();
                                 switch (input)
                                 {
@@ -258,7 +263,7 @@ while (main_meny_loop)
                                 }
                                 break;
                             case "0": // Stop loop, return to prev menu
-                                trade_system_loop = false;
+                                // trade_system_loop = false;
                                 break;
                         }
                     }

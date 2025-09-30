@@ -4,23 +4,23 @@ using App;
 
 class Trade
 {
-    public User Sender;
-    public User Reciever;
-    public Item Items;
+    public User SenderName;
+    public User RecieverName;
+    public Item SenderItem;
+    public Item RecieverItem;
 
     // Konstruktor  
-    public Trade(User sender, User reciever, Item items)
+    public Trade(Item senderItem, Item recieverItem)
     {
-        Sender = sender;
-        Reciever = reciever;
-        Items = items;
+        SenderItem = senderItem;
+        RecieverItem = recieverItem;
     }
 
     public void Get()
     {
-        Console.WriteLine("Sender: " + Sender.Email);
-        Console.WriteLine("Reciever: " + Reciever.Email);
-        Console.WriteLine("Items: " + Items.Name);
+        Console.WriteLine("Sender: " + SenderItem.Owner);
+        Console.WriteLine("Reciever: " + RecieverItem.Owner);
+        Console.WriteLine("Items: \n1. " + SenderItem.Name + "\n2. " + RecieverItem.Name);
     }
 
 
