@@ -4,24 +4,46 @@ using App;
 
 class Trade
 {
-    public User SenderName;
-    public User RecieverName;
     public Item SenderItem;
     public Item RecieverItem;
+    public int TradeStatus;
+
 
     // Konstruktor  
-    public Trade(Item senderItem, Item recieverItem)
+    public Trade(Item senderItem, Item recieverItem, int tradeStatus)
     {
         SenderItem = senderItem;
         RecieverItem = recieverItem;
+        TradeStatus = tradeStatus;
     }
 
     public void Get()
     {
-        Console.WriteLine("Sender: " + SenderItem.Owner);
-        Console.WriteLine("Reciever: " + RecieverItem.Owner);
+        Console.WriteLine("Sender: " + SenderItem.Owner.Email);
+        Console.WriteLine("Reciever: " + RecieverItem.Owner.Email);
         Console.WriteLine("Items: \n1. " + SenderItem.Name + "\n2. " + RecieverItem.Name);
+        if (TradeStatus == 1) // check if pending
+        {
+            Console.WriteLine("Status " + (Status)TradeStatus);
+        }
+
+        Console.WriteLine("NÄSTA::::::_:_:_:_:_:_");
     }
+    enum Status
+    {
+        Accepted,
+        Pending,
+        Declined,
+    }
+
+    // public Status A()
+    // {
+    //     return Status.Accepted;
+    // }
+    // public Status B()
+    // {
+    //     return Status.Declined;
+    // }
 
 
     // public Status GetStatus(string sender, string reciever, string item)

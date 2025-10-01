@@ -17,10 +17,6 @@ class User  // Class/objekt "User"
     {
         return email == Email && password == _password;
     }
-    public void Get()
-    {
-        Console.WriteLine("-    user: " + Email + " Pass: " + _password);
-    }
     public bool TryUsername(string input_username)
     {
         return input_username == Email;
