@@ -37,7 +37,7 @@ List<User> users = new List<User>(); //Skapar en lista med Users
 List<Item> items = new List<Item>(); //Skapar en lista med Items
 List<Trade> trades = new List<Trade>(); //Skapar en lista med Trades 
 
-User? active_user = null;
+User? active_user = testUser3;
 Trade? active_trade = null;
 Item? recieverItem_temp = null;
 Item? senderItem_temp = null;
@@ -119,13 +119,9 @@ while (main_meny_loop)
 
 
     try { Console.Clear(); } catch { } // aktivera när felhanteringen är klar
-    Console.WriteLine("---Trading System---");
-    if (active_user != null) { Console.WriteLine("Logged in as: " + active_user.Email); } // Ternery
-    Console.WriteLine("");
-    Console.WriteLine("1. Create new Account");
-    if (active_user == null) { Console.WriteLine("2. Login"); }
-    else { Console.WriteLine("2. Trade"); }
-    if (active_user != null) { Console.WriteLine("\n3. Logout"); }
+
+    Menu.MainMenu(active_user);
+
     string input = "";
     input = Console.ReadLine();
     try { Console.Clear(); } catch { }
@@ -236,177 +232,248 @@ while (main_meny_loop)
                     Console.WriteLine("3. Requests"); // Show all requests > enter index of item wish to modify > Accept/deny If not pending  
                     Console.WriteLine("");
                     Console.WriteLine("---cancel---");
-
-                    trade_system_request_loop = true;
-                    while (trade_system_request_loop)
+                    input = "";
+                    input = Console.ReadLine();
+                    switch (input)
                     {
-                        input = "";
-                        input = Console.ReadLine();
-                        switch (input)
-                        {
-                            case "1": // view all items
-                                try { Console.Clear(); } catch { }
-                                int item_index = 1;
-                                // int page_number = 1;
-                                // int items_per_page = 10; // hur många objekt per sida
-                                foreach (Item item in items)
-                                {
-                                    // if (item_index == (items_per_page * 10)) //Början till en visa endast såhär många per sida
-                                    // {
-                                    //     Console.WriteLine("");
-                                    //     Console.WriteLine("---Trade Menu---");
-                                    // Console.WriteLine("Press ENTER for next page ..");
-                                    // Console.WriteLine("Enter # of item to request trade"); //vilket item vill du skicka en request om 
-                                    // Console.WriteLine("---cancel---");
-                                    // string input_index_item = "";
-                                    // input_index_item = Console.ReadLine();
-                                    // if (input_index_item == "cancel")
-                                    // {
-                                    //     break;
-                                    // }
-                                    // page_number++; // turning page 
-                                    // try { Console.Clear(); } catch { }
-                                    // }
-                                    if (active_user.Email != item.Owner.Email)
-                                    {
-                                        Console.Write(item_index + ". ");
-                                        item.Get();
-                                        item_index++;
-                                    }
-                                }
-                                Console.WriteLine("---Trade Menu---");
-                                Console.WriteLine("");
-                                Console.WriteLine("Enter # of item to request trade"); //vilket item vill du skicka en request om 
-                                Console.WriteLine("");
-                                Console.WriteLine("---cancel---");
-
-                                string input_index_of_item = "";
-                                input_index_of_item = Console.ReadLine();
-                                // if (input_index_of_item == "cancel")
+                        case "1": // Broweser Items
+                            try { Console.Clear(); } catch { }
+                            int item_index = 1;
+                            // int page_number = 1;
+                            // int items_per_page = 10; // hur många objekt per sida
+                            foreach (Item item in items)
+                            {
+                                // if (item_index == (items_per_page * 10)) //Början till en visa endast såhär många per sida
+                                // {
+                                //     Console.WriteLine("");
+                                //     Console.WriteLine("---Trade Menu---");
+                                // Console.WriteLine("Press ENTER for next page ..");
+                                // Console.WriteLine("Enter # of item to request trade"); //vilket item vill du skicka en request om 
+                                // Console.WriteLine("---cancel---");
+                                // string input_index_item = "";
+                                // input_index_item = Console.ReadLine();
+                                // if (input_index_item == "cancel")
                                 // {
                                 //     break;
                                 // }
-                                // else
-                                // {
-                                try { Console.Clear(); } catch { }
-                                Console.WriteLine("---Trade Menu---");
-                                Console.WriteLine("");
-                                int.TryParse(input_index_of_item, out int int_input);
-                                int count = 1; //räknare för att få fram vilket index som trade ligger på ( Istället för Metoden IndexOf)
-                                foreach (Item item in items) // Skriver ut & hämtar värdet av vilket item som valdes
+                                // page_number++; // turning page 
+                                // try { Console.Clear(); } catch { }
+                                // }
+                                if (active_user.Email != item.Owner.Email)
                                 {
-                                    if (count == int_input && item.Owner.Email != active_user.Email) // har vilket index och listan filtreras utan active user 
+                                    Console.Write(item_index + ". ");
+                                    item.Get();
+                                    item_index++;
+                                }
+                            }
+                            Console.WriteLine("---Trade Menu---");
+                            Console.WriteLine("");
+                            Console.WriteLine("Enter # of item to request trade"); //vilket item vill du skicka en request om 
+
+                            string input_index_of_item = "";
+                            input_index_of_item = Console.ReadLine();
+
+                            try { Console.Clear(); } catch { }
+                            Console.WriteLine("---Trade Menu---");
+                            Console.WriteLine("");
+                            int.TryParse(input_index_of_item, out int int_input);
+                            int count = 1; //räknare för att få fram vilket index som trade ligger på ( Istället för Metoden IndexOf)
+                            foreach (Item item in items) // Skriver ut & hämtar värdet av vilket item som valdes
+                            {
+                                if (count == int_input && item.Owner.Email != active_user.Email) // har vilket index och listan filtreras utan active user 
+                                {
+                                    recieverItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
+                                    Console.WriteLine("Selected item:" + recieverItem_temp.Name);
+
+                                    Console.WriteLine("Description of item: " + recieverItem_temp.Description);
+                                    Console.WriteLine("");
+                                }
+                                count++;
+                            }
+                            item_index = 1;
+                            Console.WriteLine("Choose one of your items to trade\n");
+                            foreach (Item item in items) // visar Lista på active users items (EGNA)
+                            {
+                                if (item.Owner.Email == active_user.Email)
+                                {
+                                    Console.Write(item_index + ". ");
+                                    item.Get();
+                                    item_index++;
+
+                                }
+                            }
+                            Console.WriteLine("---Trade Menu---");
+                            Console.WriteLine("");
+                            Console.WriteLine("Enter # of item to request trade"); //vilket item vill du skicka en request om 
+                            string string_of_index_input = Console.ReadLine();
+
+                            //KAN BLI METOD
+                            int.TryParse(string_of_index_input, out int int_input_2);
+                            count = 1; //räknare för att få fram vilket index som trade ligger på ( Istället för Metoden IndexOf)
+                            foreach (Item item in items) //samma logic som för att hämta reciever
+                            {
+                                if (item.Owner.Email == active_user.Email)
+                                {
+                                    if (count == int_input_2) // har vilket index och listan filtreras MED active user 
                                     {
-                                        recieverItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
-                                        Console.WriteLine("Selected item:");
-                                        Console.WriteLine(recieverItem_temp.Owner.Email + ": " + recieverItem_temp.Name);
-                                        Console.WriteLine(recieverItem_temp.Description);
+                                        senderItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner Senders item i en temp
+                                        Console.WriteLine(active_user.Email + " item: " + senderItem_temp.Name);
+                                        Console.WriteLine(senderItem_temp.Description);
                                         Console.WriteLine("");
                                     }
                                     count++;
                                 }
-                                item_index = 1;
-                                foreach (Item item in items) // visar Lista på active users items (EGNA)
-                                {
-                                    if (item.Owner.Email == active_user.Email)
-                                    {
-                                        Console.Write(item_index + ". ");
-                                        item.Get();
-                                        item_index++;
+                            }
+                            //
 
-                                    }
-                                }
-                                Console.WriteLine("---Trade Menu---");
-                                Console.WriteLine("");
-                                Console.WriteLine("Enter # of item to request trade"); //vilket item vill du skicka en request om 
-                                Console.WriteLine("");
-                                Console.WriteLine("---cancel---");
-                                string string_of_index_input = Console.ReadLine();
-                                int.TryParse(string_of_index_input, out int int_input_2);
-                                count = 1; //räknare för att få fram vilket index som trade ligger på ( Istället för Metoden IndexOf)
-                                foreach (Item item in items) //samma logic som för att hämta reciever
-                                {
-                                    if (item.Owner.Email == active_user.Email)
-                                    {
-                                        if (count == int_input_2) // har vilket index och listan filtreras MED active user 
-                                        {
-                                            senderItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner Senders item i en temp
-                                            Console.WriteLine(active_user.Email + " item: " + senderItem_temp.Name);
-                                            Console.WriteLine(senderItem_temp.Description);
-                                            Console.WriteLine("");
-                                        }
-                                        count++;
-                                    }
-                                }
-                                try { Console.Clear(); } catch { }
+                            try { Console.Clear(); } catch { }
 
-                                if (senderItem_temp != null && recieverItem_temp != null)
-                                {
+                            if (senderItem_temp != null && recieverItem_temp != null)
+                            {
 
-                                    trades.Add(new Trade(senderItem_temp, recieverItem_temp, 0));
-                                    Console.WriteLine($"Trade request: {recieverItem_temp.Name} successfully sent to: {recieverItem_temp.Owner.Email}");
-                                    Console.WriteLine($"You have offered: {senderItem_temp.Name}");
-                                    Console.WriteLine();
-                                    Console.WriteLine("Press ENTER to continue .. ");
-                                    Console.ReadLine();
-                                }
-                                else
-                                {
-                                    Console.WriteLine("Trade request failed, please try again");
-                                    Console.WriteLine();
-                                    Console.WriteLine("Press ENTER to continue .. ");
-                                    Console.ReadLine();
-                                    break;
-                                }
-                                break;
-                            // }
-                            // foreach (Item item in items)
-                            // {
-                            //     if (item.Owner == active_user)
-                            //     {
-                            //         Item senderItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
-                            //         Console.WriteLine("this is the senderItem_temp: ");
-                            //         senderItem_temp.Get();
-                            //     }
-                            // }
-                            // trades.Add(new Trade("")); // lägger till i en lista av aktiva trades
-                            case "2": // kolla egna items
-                                try { Console.Clear(); } catch { }
-                                item_index = 1;
-                                foreach (Item item in items)
-                                {
-                                    if (item.Owner == active_user)
-                                    {
-                                        Console.Write(item_index + ". ");
-                                        item.Get();
-                                        item_index++;
-                                    }
-                                }
+                                Console.WriteLine($"Trade request successfully sent to {recieverItem_temp.Owner.Email}");
+                                Console.WriteLine($"{recieverItem_temp.Owner.Email}: {recieverItem_temp.Name}");
+                                Console.WriteLine($"Your offer: {senderItem_temp.Name}");
+                                Console.WriteLine();
+                                Console.WriteLine("Press ENTER to continue .. ");
+                                Console.ReadLine();
+                                trades.Add(new Trade(senderItem_temp, recieverItem_temp, 0));
+                            }
+                            else
+                            {
+                                Console.WriteLine("Trade request failed, please try again");
                                 Console.WriteLine();
                                 Console.WriteLine("Press ENTER to continue .. ");
                                 Console.ReadLine();
                                 break;
-                            case "3": // kolla trade recieve
-                                try { Console.Clear(); } catch { }
-                                int item_index_count = 1;
-                                foreach (Trade trade in trades)
-                                {
-                                    if (trade.RecieverItem.Owner.Email == active_user.Email)
-                                    {
-                                        Console.Write(item_index_count + ". ");
-                                        trade.Get();
-                                        item_index_count++;
+                            }
+                            break;
+                        // }
+                        // foreach (Item item in items)
+                        // {
+                        //     if (item.Owner == active_user)
+                        //     {
+                        //         Item senderItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
+                        //         Console.WriteLine("this is the senderItem_temp: ");
+                        //         senderItem_temp.Get();
+                        //     }
+                        // }
+                        // trades.Add(new Trade("")); // lägger till i en lista av aktiva trades
+                        case "2": // kolla egna items
+                            try { Console.Clear(); } catch { }
 
-                                    }
+                            item_index = 1;
+                            foreach (Item item in items)
+                            {
+                                if (item.Owner == active_user)
+                                {
+                                    Console.Write(item_index + ". ");
+                                    item.Get();
+                                    item_index++;
                                 }
+                            }
+                            Console.WriteLine("---Trade Menu---");
+                            Console.WriteLine("");
+                            Console.WriteLine("Enter # of item to request trade"); //vilket av DINA item vill du tradea  
+                            Console.ReadLine();
+                            break;
+                        case "3": // kolla trade recieve
+                            try { Console.Clear(); } catch { }
+
+                            // Show() logged in users items
+                            int item_index_count = 1;
+                            foreach (Trade trade in trades)
+                            {
+                                if (trade.RecieverItem.Owner.Email == active_user.Email)
+                                {
+                                    Console.Write(item_index_count + ". ");
+                                    trade.Get();
+                                    item_index_count++;
+
+                                }
+                            }
+
+
+                            item_index = 1;
+                            Console.WriteLine("---Trade Menu---");
+                            Console.WriteLine("");
+                            Console.WriteLine("Enter # of item to request trade"); //vilket av DINA item vill du tradea
+                            string string_of_index_input_p = Console.ReadLine();
+
+                            //KAN BLI METOD
+                            int.TryParse(string_of_index_input_p, out int int_input_2_p);
+                            count = 1; //räknare för att få fram vilket index som trade ligger på ( Istället för Metoden IndexOf)
+
+                            foreach (Item item in items) //Kollar vilket item som INDEX VALDE
+                            {
+                                if (item.Owner.Email == active_user.Email)
+                                {
+                                    if (count == int_input_2_p) // har vilket index och listan filtreras MED active user 
+                                    {
+                                        senderItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner Senders item i en temp
+                                        Console.WriteLine(active_user.Email + " item: " + senderItem_temp.Name);
+                                        Console.WriteLine(senderItem_temp.Description);
+                                        Console.WriteLine("");
+                                    }
+                                    count++;
+                                }
+                            }
+
+
+                            try { Console.Clear(); } catch { }
+                            Console.WriteLine("---Trade Menu---");
+                            Console.WriteLine("");
+                            Console.WriteLine("Srkiv in vilken nummer");
+
+                            string input_index_of_item_x = "";
+                            input_index_of_item_x = Console.ReadLine();
+                            int.TryParse(input_index_of_item_x, out int int_input_a);
+                            count = 1; //räknare för att få fram vilket index som trade ligger på ( Istället för Metoden IndexOf)
+
+
+
+
+
+
+
+                            foreach (Item item in items) // Skriver ut & hämtar värdet av vilket item som valdes
+                            {
+                                if (count == int_input_a && item.Owner.Email != active_user.Email) // har vilket index och listan filtreras utan active user 
+                                {
+                                    recieverItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
+                                    Console.WriteLine("Selected item:" + recieverItem_temp.Name);
+
+                                    Console.WriteLine("Description of item: " + recieverItem_temp.Description);
+                                    Console.WriteLine("");
+                                }
+                                count++;
+                            }
+
+
+                            if (senderItem_temp != null && recieverItem_temp != null)
+                            {
+
+                                Console.WriteLine($"Trade request successfully sent to {recieverItem_temp.Owner.Email}");
+                                Console.WriteLine($"{recieverItem_temp.Owner.Email}: {recieverItem_temp.Name}");
+                                Console.WriteLine($"Your offer: {senderItem_temp.Name}");
+                                Console.WriteLine();
+                                Console.WriteLine("Press ENTER to continue .. ");
+                                Console.ReadLine();
+                                trades.Add(new Trade(senderItem_temp, recieverItem_temp, 0));
+                            }
+                            else
+                            {
+                                Console.WriteLine("Trade request failed, please try again");
                                 Console.WriteLine();
                                 Console.WriteLine("Press ENTER to continue .. ");
                                 Console.ReadLine();
                                 break;
-                            case "cancel": // Stop loop, return to prev menu
-                                // trade_system_loop = false;
-                                break;
-                        }
+                            }
+
+                            break;
+                        case "cancel": // Stop loop, return to prev menu
+                            // trade_system_loop = false;
+                            break;
                     }
                 }
                 break;

@@ -19,13 +19,22 @@ class Trade
 
     public void Get()
     {
-        Console.WriteLine("Sender: " + SenderItem.Owner.Email);
-        Console.WriteLine("Reciever: " + RecieverItem.Owner.Email);
-        Console.WriteLine("Items: \n1. " + SenderItem.Name + "\n2. " + RecieverItem.Name);
-        if (TradeStatus == 1) // check if pending
+        if (TradeStatus == 1) // check if pending, write "Status Pending"
         {
             Console.WriteLine("Status " + (Status)TradeStatus);
         }
+        if (TradeStatus >= 1) // check if pending, write "Status Accepted"
+        {
+            Console.WriteLine("Status " + (Status)TradeStatus);
+        }
+        if (TradeStatus <= 1) // check if pending, write "Status Declined"
+        {
+            Console.WriteLine("Status " + (Status)TradeStatus);
+        }
+
+        Console.WriteLine("Sender: " + SenderItem.Owner.Email);
+        Console.WriteLine("Reciever: " + RecieverItem.Owner.Email);
+        Console.WriteLine("Items: \n1. " + SenderItem.Name + "\n2. " + RecieverItem.Name);
 
         Console.WriteLine("NÄSTA::::::_:_:_:_:_:_");
     }
