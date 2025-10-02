@@ -38,6 +38,18 @@ class Trade
 
         Console.WriteLine("NÄSTA::::::_:_:_:_:_:_");
     }
+    public static int ShowUsersTrades(User active_user, Item UsersItems, int count)
+    {
+        {
+            if (active_user.Email == UsersItems.Owner.Email)
+            {
+                Console.Write(count + ". ");
+                UsersItems.Get();
+                count++;
+            }
+        }
+        return count;
+    }
     enum Status
     {
         Accepted,

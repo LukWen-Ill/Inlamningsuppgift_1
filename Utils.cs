@@ -12,18 +12,4 @@ class Utils
         Console.WriteLine("Press ENTER to continue .. ");
         Console.ReadLine();
     }
-
-    public static int ShowOthersItems(User active_user, Item OthersItems, int count)
-    {
-        {
-            if (active_user.Email != OthersItems.Owner.Email)
-            {
-                Console.Write(count + ". ");
-                OthersItems.Get();
-                count++;
-            }
-        }
-        return count;
-    }
-
 }
