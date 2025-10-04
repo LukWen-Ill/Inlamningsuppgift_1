@@ -15,21 +15,14 @@ class Item
         Description = description;
         Owner = owner;
     }
-    // public int GetitemsUploaded()
-    // {
 
-    // }
-    // public int GetincomingRequests()
-    // {
-
-    // }
     public void Get()
     {
         Console.WriteLine($"{Name}\n   {Description}\n   Trader: {Owner.Email}\n");
     }
-    public static int ShowItems(User active_user, Item items, int count, int choice)
+    public static int ShowItems(User active_user, Item items, int count, bool usersItems)
     {
-        if (choice == 1) // Shows all items except the users
+        if (!usersItems) // Shows all items EXCEPT the users
         {
             if (active_user.Email != items.Owner.Email)
 
@@ -39,7 +32,7 @@ class Item
                 count++;
             }
         }
-        else if (choice == 2) // Show all the users items
+        else // Show ONLY the users items
         {
             if (active_user.Email == items.Owner.Email)
             {
@@ -47,16 +40,6 @@ class Item
                 items.Get();
                 count++;
             }
-        }
-        else if (choice == 3) // Shows all items including users
-        {
-            Console.Write(count + ". ");
-            items.Get();
-            count++;
-        }
-        else
-        {
-            count++;
         }
         return count;
     }

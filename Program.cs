@@ -105,6 +105,7 @@ bool dashboard_loop = true;
 bool trade_system_request_loop = true;
 string? input_password = null;
 string? input_username = null;
+int item_index = 1;
 
 while (mainMenu_loop) // MainMenu
 {
@@ -223,28 +224,120 @@ while (mainMenu_loop) // MainMenu
             switch (input)
             {
                 case "1": // Upload Item // ShowDashboard
-                    /*
-                    New(int variable Item)
-                    */
+
+                    // New(int variable Item)
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Menu.DrawHeaderBox("Upload new item");
+
+                    Console.Write("Please enter the name of Item: \n");
+                    string? input_itemName = Console.ReadLine();
+
+                    Console.Write("Please enter a description of the Item: \n");
+                    string? input_itemDescription = Console.ReadLine();
+
+                    items.Add(new Item(input_itemName, input_itemDescription, active_user));
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Menu.DrawHeaderBox("Upload new item: Completed");
+
+                    Console.WriteLine("You have sucessfully uploaded a new item");
+
+                    Utils.PressEnter();
                     break;
                 case "2": // Browse Items // ShowDashboard
-                    /*
-                    ShowItems()
-                    Switch Case 
-                        1. Filter
-                        2. Trade 
-                        3. Back
-                    */
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Menu.DrawHeaderBox("Browse items");
+                    bool usersItems = false;
+                    item_index = 1;
+                    int item_count = 1;
+                    int max_items_per_page = 5;
+                    foreach (Item item in items)
+                    {
+                        if (item_count <= max_items_per_page)
+                        {
+
+                            Console.Write("Press ENTER for next page..");
+                            input = null;
+                            input = Console.ReadLine();
+                            if ()
+                            {
+
+                            }
+                            item_count = 1;
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Menu.DrawHeaderBox("Browse items");
+
+
+                        }
+                        else
+                        {
+                            item_index = Item.ShowItems(active_user, item, item_index, usersItems);
+                        }
+                        item_count++;
+                    }
+                    input = null;
+                    input = Console.ReadLine();
+                    switch (input)
+                    {
+
+                        case "1": // 1.Filter
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Menu.DrawHeaderBox("Filter items");
+                            Console.Write("Filter by item name: ");
+                            string searchWord = Console.ReadLine();
+
+                            foreach (Item item in items)
+                            {
+                                if (searchWord == item.Name)
+                                {
+                                    item_index = Item.ShowItems(active_user, item, item_index, usersItems);
+                                }
+                            }
+                            break;
+                        case "2": // 2.Trade
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Menu.DrawHeaderBox("Trade items");
+                            Console.WriteLine("Choose an item from the list");
+                            string? string_index_input = null;
+                            string_index_input = Console.ReadLine();
+                            int.TryParse(string_index_input, out int int_index_input);
+                            int count = 1; //räknare för att få fram vilket index som trade ligger på
+                            Menu.DrawHeaderBox("List of Items");
+                            foreach (Item item in items) // Skriver ut & hämtar värdet av vilket item som valdes
+                            {
+                                if (count == int_index_input && item.Owner.Email != active_user.Email) // har vilket index och listan filtreras utan active user 
+                                {
+                                    recieverItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
+                                    Console.Write("   ");
+                                    recieverItem_temp.Get();
+                                }
+                                count++;
+                            }
+                            break;
+                        case "3":// 3.Back
+                            break;
+
+                    }
                     break;
                 case "3": // Manage Trade Requests // ShowDashboard
-                    /*
-                        Trade Request Menu
-                        Switch Case 
-                            1. Trades Sent  
-                            2. Trades Recieved  
-                            3. Trade History 
-                            4. back
-                    */
+
+                    Menu.ManageTradeRequests(active_user); // Trade Request Menu
+
+                    input = null;
+                    input = Console.ReadLine();
+                    switch (input)
+                    {
+                        case "1": // Trades Sent  
+                            break;
+                        case "2": // Trades Recieved
+                            break;
+                        case "3": // Trade History
+                            break;
+                        case "4": // 4.Back
+                            break;
+
+                    }
                     break;
                 case "4": // Logout // ShowDashboard
                     active_user = null;
