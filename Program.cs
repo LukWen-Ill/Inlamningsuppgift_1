@@ -247,36 +247,24 @@ while (mainMenu_loop) // MainMenu
                 case "2": // Browse Items // ShowDashboard
                     Console.ForegroundColor = ConsoleColor.Blue;
                     Menu.DrawHeaderBox("Browse items");
+
                     bool usersItems = false;
+
                     item_index = 1;
-                    int item_count = 1;
-                    int max_items_per_page = 5;
                     foreach (Item item in items)
                     {
-                        if (item_count <= max_items_per_page)
-                        {
-
-                            Console.Write("Press ENTER for next page..");
-                            input = null;
-                            input = Console.ReadLine();
-                            if ()
-                            {
-
-                            }
-                            item_count = 1;
-                            Console.Clear();
-                            Console.ForegroundColor = ConsoleColor.Blue;
-                            Menu.DrawHeaderBox("Browse items");
-
-
-                        }
-                        else
-                        {
-                            item_index = Item.ShowItems(active_user, item, item_index, usersItems);
-                        }
-                        item_count++;
+                        item_index = Item.ShowItems(active_user, item, item_index, usersItems);
                     }
+
                     input = null;
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine("┌──────────────────────┐");
+                    Console.WriteLine("│ 1) Filter list       │");
+                    Console.WriteLine("│ 2) Trade from list   │");
+                    Console.WriteLine("│ 0) Back to Dashboard │");
+                    Console.WriteLine("└──────────────────────┘");
+                    Console.ResetColor();
+                    Console.Write("\nSelect an option: ");
                     input = Console.ReadLine();
                     switch (input)
                     {
@@ -284,21 +272,35 @@ while (mainMenu_loop) // MainMenu
                         case "1": // 1.Filter
                             Console.ForegroundColor = ConsoleColor.Blue;
                             Menu.DrawHeaderBox("Filter items");
-                            Console.Write("Filter by item name: ");
-                            string searchWord = Console.ReadLine();
+                            Console.WriteLine(""); // WE ARE HERE
+                            Console.Write("Filter by users: ");
+                            string keyword = Console.ReadLine();
 
+                            bool keyword_found = false;
+                            item_index = 1;
                             foreach (Item item in items)
                             {
-                                if (searchWord == item.Name)
+                                if (keyword == item.Owner.Email)
                                 {
                                     item_index = Item.ShowItems(active_user, item, item_index, usersItems);
+                                    keyword_found = true;
                                 }
+                            }
+                            if (!keyword_found) // om inget keyword finns skriv ut detta 
+                            {
+                                Console.WriteLine($"\"{keyword}\" not found");
                             }
                             break;
                         case "2": // 2.Trade
                             Console.ForegroundColor = ConsoleColor.Blue;
                             Menu.DrawHeaderBox("Trade items");
+
                             Console.WriteLine("Choose an item from the list");
+                            item_index = 1;
+                            foreach (Item item in items) // visar lista på items
+                            {
+                                item_index = Item.ShowItems(active_user, item, item_index, usersItems);
+                            }
                             string? string_index_input = null;
                             string_index_input = Console.ReadLine();
                             int.TryParse(string_index_input, out int int_index_input);
