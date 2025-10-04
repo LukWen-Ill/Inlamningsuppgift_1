@@ -2,84 +2,90 @@ namespace App;
 
 class Menu
 {
-    public static void MainMenu(User? active_user)
+    public static void MainMenu(User? activeUser)
     {
-        Console.ForegroundColor = ConsoleColor.Green;
-        Utils.ClearScreen();
-        DrawHeaderBox("📈 MAIN MENU");
-        Console.ForegroundColor = ConsoleColor.Green;
-
-        if (active_user != null) { Console.Write($"│ Logged in as: "); } else { Console.WriteLine($"│ {"Not logged in".PadRight(40)}│"); }
-        Console.ForegroundColor = ConsoleColor.Red;
-        if (active_user != null) { Console.Write($"{active_user.Email.PadRight(27)}"); }
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("│" + "\n" + "│                                          │");
-        Console.WriteLine("│  1) Create Account                       │");
-        if (active_user == null) { string tradeOrLogin = "Login"; Console.WriteLine($"│  2) {tradeOrLogin}                                │"); } else { string tradeOrLogin = "Trade"; Console.WriteLine($"│  2) {tradeOrLogin}                                │"); }
-        Console.WriteLine("│  3) Logout                               │");
-        Console.WriteLine("│  0) Exit                                 │");
-        Console.WriteLine("│                                          │");
-        Console.WriteLine("└──────────────────────────────────────────┘");
-        Console.ResetColor();
-        Console.Write("Select an option: ");
-    }
-
-    public static void TradeMenu(User? active_user)
-    {
-        Console.ForegroundColor = ConsoleColor.Green;
-        Utils.ClearScreen();
-        DrawHeaderBox("🤝 TRADE MENU");
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("│ Logged in as:");
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.Write($" {active_user.Email.PadRight(27)}");
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("│" + "\n" + "│                                          │");
-        Console.WriteLine("│  1) Marketplace                          │");
-        Console.WriteLine("│  2) My Items                             │");
-        Console.WriteLine("│  3) Trade Requests                       │");
-        Console.WriteLine("│  0) Back to Main Menu                    │");
-        Console.WriteLine("│                                          │");
-        Console.WriteLine("└──────────────────────────────────────────┘");
-        Console.ResetColor();
-        Console.Write("Select an option: ");
-    }
-    public static void ItemsMenu(User? active_user)
-    {
-        Console.ForegroundColor = ConsoleColor.Green;
-        Utils.ClearScreen();
-        DrawHeaderBox("📦 ITEMS MENU");
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.Write("│ Logged in as:");
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.Write($" {active_user.Email.PadRight(27)}");
-        Console.ForegroundColor = ConsoleColor.Green;
-        Console.WriteLine("│" + "\n" + "│                                          │");
-        Console.WriteLine("│  1) View Items in List                   │");
-        Console.WriteLine("│  2) Create New Trade Request             │");
-        Console.WriteLine("│  3) Trade Requests                       │");
-        Console.WriteLine("│  0) Back to Trade Menu                   │");
-        Console.WriteLine("│                                          │");
-        Console.WriteLine("└──────────────────────────────────────────┘");
-        Console.ResetColor();
-        Console.Write("Select an option: ");
-    }
-
-    public static void DrawHeaderBox(string title)
-    {
-        // Trade Menu
-        // List of Items
-        // Trading System
-        // Items Menu
-        // New Account Creation
-        // New Trade Creation
-        // Logging In
-        Utils.ClearScreen();
-
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Blue;
         Console.WriteLine("┌──────────────────────────────────────────┐");
-        Console.WriteLine($"│  {title.PadRight(40)}│");
+        Console.WriteLine("│                 MAIN MENU                │");
         Console.WriteLine("└──────────────────────────────────────────┘");
-
         Console.ResetColor();
+
+        Console.WriteLine("1) Register Account");
+        Console.WriteLine("2) Login");
+        Console.WriteLine("0) Exit");
+        Console.Write("\nSelect an option: ");
+    }
+
+    public static void DashboardOverview(int uploads, int requests, int completed)
+    {
+        // Fake stats - replace with real data later
+        Console.WriteLine("Overview:");
+        Console.WriteLine($"- Items uploaded: {uploads}");
+        Console.WriteLine($"- Incoming requests: {requests}");
+        Console.WriteLine($"- Completed trades: {completed}");
+        Console.WriteLine();
+    }
+    public static void DashboardMenu(User activeUser)
+    {
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("┌──────────────────────────────────────────┐");
+        Console.WriteLine($"│   DASHBOARD - Logged in as {activeUser.Email.PadRight(14)}│");
+        Console.WriteLine("└──────────────────────────────────────────┘");
+        Console.ResetColor();
+        // int itemsUploaded = GetitemsUploaded(); // make these
+        // int incomingRequests = GetincomingRequests();
+        // int completedTrades = GetcompletedTrades();
+
+        // DashboardOverview(itemsUploaded, incomingRequests, completedTrades);
+
+        Console.WriteLine("1) Upload Item");
+        Console.WriteLine("2) Browse Items");
+        Console.WriteLine("3) Manage Trade Requests");
+        Console.WriteLine("4) Logout");
+        Console.WriteLine("0) Exit");
+        Console.Write("\nSelect an option: ");
+    }
+
+    public static void ManageTradeRequests(User activeUser)
+    {
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("┌──────────────────────────────────────────┐");
+        Console.WriteLine("│            TRADE REQUEST MENU            │");
+        Console.WriteLine("└──────────────────────────────────────────┘");
+        Console.ResetColor();
+
+        Console.WriteLine("1) Trades Sent");
+        Console.WriteLine("2) Trades Received");
+        Console.WriteLine("3) Trade History");
+        Console.WriteLine("0) Back to Dashboard");
+        Console.Write("\nSelect an option: ");
+    }
+
+    public static void ReceivedTradeMenu(User activeUser)
+    {
+        Console.Clear();
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("┌──────────────────────────────────────────┐");
+        Console.WriteLine("│          RECEIVED TRADE REQUESTS         │");
+        Console.WriteLine("└──────────────────────────────────────────┘");
+        Console.ResetColor();
+
+        Console.WriteLine("1) Accept Request");
+        Console.WriteLine("2) Deny Request");
+        Console.WriteLine("0) Back to Trade Requests");
+        Console.Write("\nSelect an option: ");
+    }
+
+    public static void DrawHeaderBox(string input)
+    {
+        Console.Clear();
+        Console.WriteLine("┌──────────────────────────────────────────┐");
+        Console.WriteLine($"│          {input.PadRight(32)}│");
+        Console.WriteLine("└──────────────────────────────────────────┘");
+        Console.ResetColor();
+
     }
 }

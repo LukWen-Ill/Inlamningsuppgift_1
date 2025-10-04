@@ -15,7 +15,7 @@ class User  // Class/objekt "User"
     // Return TRUE IF username && password is correct.
     public bool TryLogin(string email, string password)
     {
-        return email == Email && password == _password;
+        return TryUsername(email) && password == _password;
     }
     public bool TryUsername(string input_username)
     {

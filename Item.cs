@@ -15,31 +15,48 @@ class Item
         Description = description;
         Owner = owner;
     }
+    // public int GetitemsUploaded()
+    // {
+
+    // }
+    // public int GetincomingRequests()
+    // {
+
+    // }
     public void Get()
     {
         Console.WriteLine($"{Name}\n   {Description}\n   Trader: {Owner.Email}\n");
     }
-    public static int ShowOthersItems(User active_user, Item OthersItems, int count)
+    public static int ShowItems(User active_user, Item items, int count, int choice)
     {
+        if (choice == 1) // Shows all items except the users
         {
-            if (active_user.Email != OthersItems.Owner.Email)
+            if (active_user.Email != items.Owner.Email)
+
             {
                 Console.Write(count + ". ");
-                OthersItems.Get();
+                items.Get();
                 count++;
             }
         }
-        return count;
-    }
-    public static int ShowUsersItems(User active_user, Item UsersItems, int count)
-    {
+        else if (choice == 2) // Show all the users items
         {
-            if (active_user.Email == UsersItems.Owner.Email)
+            if (active_user.Email == items.Owner.Email)
             {
                 Console.Write(count + ". ");
-                UsersItems.Get();
+                items.Get();
                 count++;
             }
+        }
+        else if (choice == 3) // Shows all items including users
+        {
+            Console.Write(count + ". ");
+            items.Get();
+            count++;
+        }
+        else
+        {
+            count++;
         }
         return count;
     }
