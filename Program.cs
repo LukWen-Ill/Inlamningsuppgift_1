@@ -38,14 +38,7 @@ List<User> users = new List<User>(); //Skapar en lista med Users
 List<Item> items = new List<Item>(); //Skapar en lista med Items
 List<Trade> trades = new List<Trade>(); //Skapar en lista med Trades 
 
-User? active_user = testUser3;
-Trade? active_trade = null;
-Item? recieverItem_temp = null;
-Item? senderItem_temp = null;
 
-bool main_meny_loop = true;
-bool trade_system_loop = true;
-bool trade_system_request_loop = true;
 
 
 // Hårdkodade användare från test123
@@ -91,89 +84,100 @@ trades.Add(new Trade(item3, item4, 0)); // Accepted
 trades.Add(new Trade(item2, item3, 2)); // Declined
 trades.Add(new Trade(item1, item2, 1)); // Pending
 trades.Add(new Trade(item3, item4, 1)); // Pending
-trades.Add(new Trade(item2, item3, 1)); // Pending
-trades.Add(new Trade(item5, item6, 1)); // Pending
+trades.Add(new Trade(item2, item3, 0)); // Accepted
+trades.Add(new Trade(item5, item6, 2)); // Declined
 trades.Add(new Trade(item7, item8, 1)); // Pending
-trades.Add(new Trade(item6, item1, 1)); // Pending
-trades.Add(new Trade(item4, item5, 1)); // Pending
+trades.Add(new Trade(item6, item1, 0)); // Accepted
+trades.Add(new Trade(item4, item5, 2)); // Declined
 trades.Add(new Trade(item8, item7, 1)); // Pending
 
 // Hårdkodade användare 
 users.Add(new User("LUKAS", "LÖSENORD"));
 users.Add(new User("max", "123"));
 
+User? active_user = testUser3;
+Trade? active_trade = null;
+Item? recieverItem_temp = null;
+Item? senderItem_temp = null;
 
-Utils.ClearScreen();
-Menu.MainMenu(active_user);
-Menu.TradeMenu(active_user);
-Menu.ItemsMenu(active_user);
+bool mainMenu_loop = true;
+bool dashboard_loop = true;
+bool trade_system_request_loop = true;
+string? input_password = null;
+string? input_username = null;
+int item_index = 1;
 
-while (main_meny_loop)
+while (mainMenu_loop) // MainMenu
 {
-    Console.ForegroundColor = ConsoleColor.Yellow;
-    Menu.MainMenu(active_user);
-    string? input = null;
-    input = Console.ReadLine();
-    Utils.ClearScreen();
-
-    switch (input) // Main Menu
+    // Ifall active_user är null visas inloggning (Mainmenu)
+    // Annars visas dashboard.
+    if (active_user == null) // if == null => register account
     {
-        case "1": // Main Menu // Register Account
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Menu.DrawHeaderBox("New Account Creation");
+        Menu.MainMenu(active_user);
+        string? input = null;
+        input = Console.ReadLine();
 
-            Console.Write("Please Enter Email: ");
-            string? input_username = null;
-            input_username = Console.ReadLine();
-            bool is_viable = true;
-            foreach (User user in users)//här testar vi alla users om användarnamnet är taget 
-            {
-                if (user.TryUsername(input_username))
+        switch (input)
+        {
+            case "1": // Register Account // MainMenu
+                bool is_viable = true;
+                input_username = null;
+
+                Console.ForegroundColor = ConsoleColor.Blue;
+                Menu.DrawHeaderBox("New Account Creation");
+
+                Console.Write("Please Enter Email: ");
+                input_username = Console.ReadLine();
+
+                foreach (User user in users)//här testar vi alla users om användarnamnet är taget 
                 {
-                    Console.ForegroundColor = ConsoleColor.Red;
+                    if (user.TryUsername(input_username))
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Menu.DrawHeaderBox("New Account Creation: Failed");
 
-                    Menu.DrawHeaderBox("New Account Creation: Failed");
-                    Console.WriteLine($"Username: {input_username} is already in use.");
+                        Console.WriteLine($"Username: {input_username} is already in use.");
+
+                        Utils.PressEnter();
+
+                        is_viable = false; // är det taget kommer is_viable bli false
+                        break; // Break loopen => testar vilkoret is_viable
+                    }
+                }
+                if (is_viable)
+                {
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Menu.DrawHeaderBox("New Account Creation");
+
+                    Console.Write("Please Enter Password: ");
+                    input_password = null;
+                    input_password = Console.ReadLine();
+
+                    users.Add(new User(input_username, input_password));
+
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Menu.DrawHeaderBox("New Account Creation: Sucess");
+
+                    Console.WriteLine("A User Was Created Successfully");
+
                     Utils.PressEnter();
-                    is_viable = false;
                     break;
                 }
-            }
-            if (is_viable)
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-
-                Menu.DrawHeaderBox("New Account Creation");
-                Console.Write("Please Enter Password: ");
-                string? input_password = null;
-                input_password = Console.ReadLine();
-                users.Add(new User(input_username, input_password));
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Menu.DrawHeaderBox("New Account Creation: Sucess");
-
-                Console.ForegroundColor = ConsoleColor.Green;
-                Console.WriteLine("\nA User Was Created Successfully");
-                Utils.PressEnter();
                 break;
-            }
-            break;
-        case "2": // Main Menu // Login OR Trade
-            if (active_user == null) // if (true) { show login } else { show Trade } 
-            {
-                Console.ForegroundColor = ConsoleColor.Yellow;
-                Menu.DrawHeaderBox("Logging In");
+            case "2": // Login // MainMenu
+                Console.ForegroundColor = ConsoleColor.Blue;
+
+                Menu.DrawHeaderBox("Sign In");
 
                 Console.Write("Please Enter Email: ");
                 input_username = null;
                 input_username = Console.ReadLine();
                 Console.Write("Please Enter Password: ");
-                string? input_password = null;
+                input_password = null;
                 input_password = Console.ReadLine();
 
                 foreach (User user in users)
                 {
-                    Console.WriteLine(user.TryLogin(input_username, input_password));
                     if (user.TryLogin(input_username, input_password))
                     {
                         active_user = user;
@@ -183,9 +187,8 @@ while (main_meny_loop)
                 if (active_user == null)
                 {
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Menu.DrawHeaderBox("Logging In: Failed");
+                    Menu.DrawHeaderBox("Sign In: Failed");
 
-                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Invalid login details");
 
                     Utils.PressEnter();
@@ -194,298 +197,175 @@ while (main_meny_loop)
                 else
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Menu.DrawHeaderBox("Logging In: Sucess");
+                    Menu.DrawHeaderBox("Sign In: Completed");
+                    Console.WriteLine("User logged in successfully");
+
+                    Utils.PressEnter();
+                }
+                break;
+            case "0": // Exit // MainMenu
+                mainMenu_loop = false;
+                break;
+            default: // Default // MainMenu
+                Console.WriteLine("Oops! That wasn't a valid option. Try again.");
+                break;
+        }
+    }
+    else // else != null => "Login"
+         // Här är andra delen av mainMenu. Ifall det finns en active_user
+         // kommer man få en Dashboard översikt och andra alternativ.
+    {
+        dashboard_loop = true;
+        while (dashboard_loop) // ShowDashboard
+        {
+            Menu.DashboardMenu(active_user);
+            string? input = null;
+            input = Console.ReadLine();
+            switch (input)
+            {
+                case "1": // Upload Item // ShowDashboard
+
+                    // New(int variable Item)
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Menu.DrawHeaderBox("Upload new item");
+
+                    Console.Write("Please enter the name of Item: \n");
+                    string? input_itemName = Console.ReadLine();
+
+                    Console.Write("Please enter a description of the Item: \n");
+                    string? input_itemDescription = Console.ReadLine();
+
+                    items.Add(new Item(input_itemName, input_itemDescription, active_user));
+
                     Console.ForegroundColor = ConsoleColor.Green;
-                    Console.WriteLine("Login Successful");
+                    Menu.DrawHeaderBox("Upload new item: Completed");
+
+                    Console.WriteLine("You have sucessfully uploaded a new item");
 
                     Utils.PressEnter();
                     break;
-                }
-            }
-            //          (" 2) Trade");
-            else // IF true => show Login 
-                 // else => show Trade 
-            {
-                trade_system_loop = true;
-                while (trade_system_loop)
-                {
-                    Menu.TradeMenu(active_user);
+                case "2": // Browse Items // ShowDashboard
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Menu.DrawHeaderBox("Browse items");
+
+                    bool usersItems = false;
+
+                    item_index = 1;
+                    foreach (Item item in items)
+                    {
+                        item_index = Item.ShowItems(active_user, item, item_index, usersItems);
+                    }
+
+                    input = null;
+                    Console.ForegroundColor = ConsoleColor.Blue;
+                    Console.WriteLine("┌──────────────────────┐");
+                    Console.WriteLine("│ 1) Filter list       │");
+                    Console.WriteLine("│ 2) Trade from list   │");
+                    Console.WriteLine("│ 0) Back to Dashboard │");
+                    Console.WriteLine("└──────────────────────┘");
+                    Console.ResetColor();
+                    Console.Write("\nSelect an option: ");
+                    input = Console.ReadLine();
+                    switch (input)
+                    {
+
+                        case "1": // 1.Filter
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Menu.DrawHeaderBox("Filter items");
+                            Console.WriteLine("");
+                            Console.Write("Filter by users: ");
+                            string keyword = Console.ReadLine();
+
+                            bool keyword_found = false;
+                            item_index = 1;
+                            foreach (Item item in items)
+                            {
+                                if (keyword == item.Owner.Email)
+                                {
+                                    item_index = Item.ShowItems(active_user, item, item_index, usersItems);
+                                    keyword_found = true;
+                                }
+                            }
+                            if (!keyword_found) // om inget keyword finns skriv ut detta 
+                            {
+                                Console.WriteLine($"\"{keyword}\" not found");
+                            }
+                            Utils.PressEnter();
+                            break;
+                        case "2": // 2.Trade
+                            Console.ForegroundColor = ConsoleColor.Blue;
+                            Menu.DrawHeaderBox("Trade items");
+
+                            Console.WriteLine("Choose an item from the list");
+                            item_index = 1;
+                            foreach (Item item in items) // visar lista på items
+                            {
+                                item_index = Item.ShowItems(active_user, item, item_index, usersItems);
+                            }
+                            string? string_index_input = null;
+                            string_index_input = Console.ReadLine();
+                            int.TryParse(string_index_input, out int int_index_input);
+                            int count = 1; //räknare för att få fram vilket index som trade ligger på
+                            Menu.DrawHeaderBox("List of Items");
+                            foreach (Item item in items) // Skriver ut & hämtar värdet av vilket item som valdes
+                            {
+                                if (count == int_index_input && item.Owner.Email != active_user.Email) // har vilket index och listan filtreras utan active user 
+                                {
+                                    recieverItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
+                                    Console.Write("   ");
+                                    recieverItem_temp.Get();
+                                }
+                                count++;
+                            }
+                            break;
+                        case "3":// 3.Back
+                            break;
+
+                    }
+                    break;
+                case "3": // Manage Trade Requests // ShowDashboard
+
+                    Menu.ManageTradeRequests(active_user); // Trade Request Menu
+
                     input = null;
                     input = Console.ReadLine();
-                    switch (input) // TradeMenu
+                    switch (input)
                     {
-                        case "1": // TradeMenu // All Items & Trades
-                            Menu.DrawHeaderBox("Trade Menu");
-                            Menu.ItemsMenu(active_user);
-                            input = null;
-                            input = Console.ReadLine();
-                            switch (input) // ItemsMenu
-                            {
-                                case "1": // ItemsMenu // View Items in List
-                                    Menu.DrawHeaderBox("List of Items");
-                                    int item_index = 1;
-                                    foreach (Item item in items) // visar Lista på active users items (EGNA)
-                                    {
-                                        item_index = Item.ShowUsersItems(active_user, item, item_index);
-                                    }
-                                    Utils.PressEnter();
-                                    break;
-                                case "2": // ItemsMenu // Create New Trade Request
-                                    Menu.DrawHeaderBox("New Trade Creation");
-                                    item_index = 1;
-                                    foreach (Item item in items)
-                                    {
-                                        item_index = Item.ShowOthersItems(active_user, item, item_index);
-                                    }
-                                    Console.WriteLine("Enter # of item to request trade");
-                                    Console.Write("Select an option: ");
-                                    string? string_index_input = null;
-                                    string_index_input = Console.ReadLine();
-                                    int.TryParse(string_index_input, out int int_index_input);
-                                    int count = 1; //räknare för att få fram vilket index som trade ligger på ( Istället för Metoden IndexOf)
-                                    Menu.DrawHeaderBox("List of Items");
-                                    foreach (Item item in items) // Skriver ut & hämtar värdet av vilket item som valdes
-                                    {
-                                        if (count == int_index_input && item.Owner.Email != active_user.Email) // har vilket index och listan filtreras utan active user 
-                                        {
-                                            recieverItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
-                                            Console.Write("   ");
-                                            recieverItem_temp.Get();
-                                        }
-                                        count++;
-                                    }
-                                    //
-                                    item_index = 1;
-                                    foreach (Item item in items) // visar Lista på active users items (EGNA)
-                                    {
-                                        item_index = Item.ShowUsersItems(active_user, item, item_index);
-                                    }
-
-                                    Console.WriteLine("---Trade Menu---");
-                                    Console.WriteLine("");
-                                    Console.WriteLine("Enter # of item to request trade"); //vilket item vill du skicka en request om 
-                                    string string_of_index_input = Console.ReadLine();
-
-                                    //KAN BLI METOD // VAD GÖR DEN ENS?
-                                    int.TryParse(string_of_index_input, out int int_input_2);
-                                    count = 1; //räknare för att få fram vilket index som trade ligger på ( Istället för Metoden IndexOf)
-                                    foreach (Item item in items) //samma logic som för att hämta reciever
-                                    {
-                                        if (item.Owner.Email == active_user.Email)
-                                        {
-                                            if (count == int_input_2) // har vilket index och listan filtreras MED active user 
-                                            {
-                                                senderItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner Senders item i en temp
-                                                Console.WriteLine(active_user.Email + " item: " + senderItem_temp.Name);
-                                                Console.WriteLine(senderItem_temp.Description);
-                                                Console.WriteLine("");
-                                            }
-                                            count++;
-                                        }
-                                    }
-                                    Utils.ClearScreen();
-                                    if (senderItem_temp != null && recieverItem_temp != null)
-                                    {
-                                        Menu.DrawHeaderBox("Trading System");
-                                        Console.WriteLine($"Trade request successfully sent to {recieverItem_temp.Owner.Email}");
-                                        Console.WriteLine($"{recieverItem_temp.Owner.Email}: {recieverItem_temp.Name}");
-                                        Console.WriteLine($"Your offer: {senderItem_temp.Name}");
-                                        Console.WriteLine();
-                                        Console.WriteLine("Press ENTER to continue .. ");
-                                        Console.ReadLine();
-                                        trades.Add(new Trade(senderItem_temp, recieverItem_temp, 0));
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("Trade request failed, please try again");
-                                        Console.WriteLine();
-                                        Console.WriteLine("Press ENTER to continue .. ");
-                                        Console.ReadLine();
-                                    }
-                                    break;
-                                case "3": // TradeMenu / My Items & Trades
-                                    while (trade_system_loop)
-                                    {
-                                        Utils.ClearScreen();
-                                        Menu.DrawHeaderBox("Items Menu");
-                                        Menu.ItemsMenu(active_user);
-                                        input = null;
-                                        input = Console.ReadLine();
-                                        switch (input) // ItemsMenu
-                                        {
-                                            case "1": // ItemsMenu / View Items in List
-                                                Utils.ClearScreen();
-                                                // kolla egna items 
-                                                Menu.DrawHeaderBox("List of Items");
-                                                item_index = 1;
-                                                foreach (Item item in items) // visar Lista på active users items (EGNA)
-                                                {
-                                                    item_index = Item.ShowUsersItems(active_user, item, item_index);
-                                                }
-                                                Utils.PressEnter();
-                                                break;
-                                            case "2": // ItemsMenu / Create new Trade Request
-                                                break;
-                                            case "3": // ItemsMenu / Trade Requests
-                                                break;
-                                            case "0": // Exit
-                                                trade_system_loop = false;
-                                                break;
-                                        }
-                                    }
-                                    break;
-                                case "4": // TradeMenu / Trade Requests
-                                    try { Console.Clear(); } catch { }
-                                    // Show() logged in users items
-                                    int item_index_count = 1;
-                                    foreach (Trade trade in trades)
-                                    {
-                                        if (trade.RecieverItem.Owner.Email == active_user.Email)
-                                        {
-                                            Console.Write(item_index_count + ". ");
-                                            trade.Get();
-                                            item_index_count++;
-
-                                        }
-                                    }
-
-
-                                    item_index = 1;
-                                    Console.WriteLine("---Trade Menu---");
-                                    Console.WriteLine("");
-                                    Console.WriteLine("Enter # of item to request trade"); //vilket av DINA item vill du tradea
-                                    string string_of_index_input_p = Console.ReadLine();
-
-                                    //KAN BLI METOD
-                                    int.TryParse(string_of_index_input_p, out int int_input_2_p);
-                                    count = 1; //räknare för att få fram vilket index som trade ligger på ( Istället för Metoden IndexOf)
-
-                                    foreach (Item item in items) //Kollar vilket item som INDEX VALDE
-                                    {
-                                        if (item.Owner.Email == active_user.Email)
-                                        {
-                                            if (count == int_input_2_p) // har vilket index och listan filtreras MED active user 
-                                            {
-                                                senderItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner Senders item i en temp
-                                                Console.WriteLine(active_user.Email + " item: " + senderItem_temp.Name);
-                                                Console.WriteLine(senderItem_temp.Description);
-                                                Console.WriteLine("");
-                                            }
-                                            count++;
-                                        }
-                                    }
-
-
-                                    try { Console.Clear(); } catch { }
-                                    Console.WriteLine("---Trade Menu---");
-                                    Console.WriteLine("");
-                                    Console.WriteLine("Srkiv in vilken nummer");
-
-                                    string input_index_of_item_x = "";
-                                    input_index_of_item_x = Console.ReadLine();
-                                    int.TryParse(input_index_of_item_x, out int int_input_a);
-                                    count = 1; //räknare för att få fram vilket index som trade ligger på ( Istället för Metoden IndexOf)
-
-
-
-
-
-
-
-                                    foreach (Item item in items) // Skriver ut & hämtar värdet av vilket item som valdes
-                                    {
-                                        if (count == int_input_a && item.Owner.Email != active_user.Email) // har vilket index och listan filtreras utan active user 
-                                        {
-                                            recieverItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
-                                            Console.WriteLine("Selected item:" + recieverItem_temp.Name);
-
-                                            Console.WriteLine("Description of item: " + recieverItem_temp.Description);
-                                            Console.WriteLine("");
-                                        }
-                                        count++;
-                                    }
-
-
-                                    if (senderItem_temp != null && recieverItem_temp != null)
-                                    {
-
-                                        Console.WriteLine($"Trade request successfully sent to {recieverItem_temp.Owner.Email}");
-                                        Console.WriteLine($"{recieverItem_temp.Owner.Email}: {recieverItem_temp.Name}");
-                                        Console.WriteLine($"Your offer: {senderItem_temp.Name}");
-                                        Console.WriteLine();
-                                        Console.WriteLine("Press ENTER to continue .. ");
-                                        Console.ReadLine();
-                                        trades.Add(new Trade(senderItem_temp, recieverItem_temp, 0));
-                                    }
-                                    else
-                                    {
-                                        Console.WriteLine("Trade request failed, please try again");
-                                        Console.WriteLine();
-                                        Console.WriteLine("Press ENTER to continue .. ");
-                                        Console.ReadLine();
-                                        break;
-                                    }
-
-                                    break;
-                                case "0": // Stop loop, return to prev menu
-                                    trade_system_loop = false;
-                                    break;
-                            } // ItemsMenu
+                        case "1": // Trades Sent  
                             break;
-                    } // TradeMenu
+                        case "2": // Trades Recieved
+                            break;
+                        case "3": // Trade History
+                            break;
+                        case "4": // 4.Back
+                            break;
+
+                    }
                     break;
-                } // While (trade_system_loop)
-                break;
+                case "4": // Logout // ShowDashboard
+                    active_user = null;
+                    dashboard_loop = false;
+                    break;
+                case "0": // Exit // ShowDashboard
+                    dashboard_loop = false;
+                    mainMenu_loop = false;
+                    break;
+                default: // Default // ShowDashboard
+                    Console.WriteLine("Oops! That wasn't a valid option. Try again.");
+                    break;
             }
-        case "3": // Main Menu
-            active_user = null;
-            break;
+        }
     }
 }
-// A user needs to be able to upload information about the item they wish to trade.
-// A user needs to be able to browse a list of other users items. item.get() 
-// A user needs to be able to request a trade for other users items.
-// A user needs to be able to browse trade requests.
-// A user needs to be able to accept a trade request.
-// A user needs to be able to deny a trade request.
-// A user needs to be able to browse completed requests.
-/*
-                          ┌───────────────┐
-                          │   MAIN MENU   │
-                          └───────┬───────┘
-                                  │
-       ┌──────────────────────────┼──────────────────────────┐
-       │                          │                          │
- ┌────────────┐             ┌────────────┐             ┌────────────┐
- │ 1) Login   │             │ 2) Trade   │             │ 3) Logout  │
- └─────┬──────┘             └─────┬──────┘             └─────┬──────┘
-       │                          │                          │
-       ▼                          ▼                          ▼
- (Authenticate)             ┌───────────────┐          (Clear session)
-                            │  TRADE MENU   │
-                            └─────┬─────────┘
-                                  │
-       ┌──────────────────────────┼──────────────────────────┐
-       │                          │                          │
- ┌───────────────┐         ┌───────────────┐          ┌─────────────────┐
- │ 1) Marketplace│         │ 2) My Items   │          │ 3) Trade Requests│
- └───────┬───────┘         └───────┬───────┘          └─────────┬───────┘
-         │                         │                            │
-         ▼                         ▼                            ▼
-┌──────────────────────┐  ┌──────────────────────┐      ┌────────────────────┐
-│ Show all items       │  │ Show user's items    │      │ TRADE REQUEST MENU │
-│ (except user’s)      │  │                      │      └──────────┬─────────┘
-│                      │  │ "Do you wish to     │                  │
-│ "Trade or Back?"     │  │  trade or go back?" │                  │
-│                      │  │                     │                  │
-│ If Trade → Create    │  │ If Trade → Create   │         ┌────────┴─────────┐
-│ Trade Request        │  │ Trade Request       │         │ 1) Add Item       │
-│ Else → Back          │  │ Else → Back         │         │ 2) Remove Item    │
-└──────────────────────┘  └──────────────────────┘         │ 3) Trade History │
-                                                           └────────┬─────────┘
-                                                                    │
-                                                           ┌────────▼─────────┐
-                                                           │ Show requested    │
-                                                           │ actions/history   │
-                                                           └───────────────────┘
-*/
+// public int GetitemsUploaded()
+// {
+
+// }
+// public int GetincomingRequests()
+// {
+
+// }
+// public int GetcompletedTrades()
+// {
+
+// }
