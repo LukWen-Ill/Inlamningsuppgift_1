@@ -53,6 +53,8 @@ class Trade
         }
         return count;
     }
+
+
     enum Status
     {
         Accepted,

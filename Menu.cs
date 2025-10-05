@@ -31,7 +31,11 @@ class Menu
         Console.Clear();
         Console.ForegroundColor = ConsoleColor.Blue;
         Console.WriteLine("┌──────────────────────────────────────────┐");
-        Console.WriteLine($"│   DASHBOARD - Logged in as {activeUser.Email.PadRight(14)}│");
+        Console.Write($"│   DASHBOARD - Logged in as ");
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.Write($"{activeUser.Email.PadRight(14)}");
+        Console.ForegroundColor = ConsoleColor.Blue;
+        Console.WriteLine("│");
         Console.WriteLine("└──────────────────────────────────────────┘");
         Console.ResetColor();
         // int itemsUploaded = GetitemsUploaded(); // make these
@@ -77,6 +81,24 @@ class Menu
         Console.WriteLine("2) Deny Request");
         Console.WriteLine("0) Back to Trade Requests");
         Console.Write("\nSelect an option: ");
+    }
+    public static void TradeWindow(Item sender, Item reciever)
+    {
+        Console.Clear();
+
+        Console.WriteLine("┌───────────────────────────────┐                 ┌───────────────────────────────┐");
+        Console.WriteLine("│             ITEM              │                 │             ITEM              │");
+        Console.WriteLine("├───────────────────────────────┤                 ├───────────────────────────────┤");
+
+        Console.WriteLine($"│ Name:  {sender.Name.PadRight(22)} │                 │ Name:  {reciever.Name.PadRight(22)} │");
+        Console.WriteLine($"│ Desc.: {sender.Description.PadRight(22)} │                 │ Desc.: {reciever.Description.PadRight(22)} │");
+        Console.WriteLine($"│ Owner: {sender.Owner.Email.PadRight(22)} │                 │ Owner: {reciever.Owner.Email.PadRight(22)} │");
+
+        Console.WriteLine("└───────────────────────────────┘                 └───────────────────────────────┘");
+        Console.WriteLine();
+        Console.WriteLine("                        ┌───────────────────────────────┐");
+        Console.WriteLine("                        │           TRADE FOR           │");
+        Console.WriteLine("                        └───────────────────────────────┘");
     }
 
     public static void DrawHeaderBox(string input)

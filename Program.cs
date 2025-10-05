@@ -102,6 +102,7 @@ Item? senderItem_temp = null;
 
 bool mainMenu_loop = true;
 bool dashboard_loop = true;
+bool dashboard_loop_browse = true;
 bool trade_system_request_loop = true;
 string? input_password = null;
 string? input_username = null;
@@ -207,7 +208,9 @@ while (mainMenu_loop) // MainMenu
                 mainMenu_loop = false;
                 break;
             default: // Default // MainMenu
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Oops! That wasn't a valid option. Try again.");
+                Console.ResetColor();
                 break;
         }
     }
@@ -245,81 +248,134 @@ while (mainMenu_loop) // MainMenu
                     Utils.PressEnter();
                     break;
                 case "2": // Browse Items // ShowDashboard
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Menu.DrawHeaderBox("Browse items");
-
-                    bool usersItems = false;
-
-                    item_index = 1;
-                    foreach (Item item in items)
+                    dashboard_loop_browse = true;
+                    while (dashboard_loop_browse)
                     {
-                        item_index = Item.ShowItems(active_user, item, item_index, usersItems);
-                    }
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Menu.DrawHeaderBox("Browse items");
 
-                    input = null;
-                    Console.ForegroundColor = ConsoleColor.Blue;
-                    Console.WriteLine("┌──────────────────────┐");
-                    Console.WriteLine("│ 1) Filter list       │");
-                    Console.WriteLine("│ 2) Trade from list   │");
-                    Console.WriteLine("│ 0) Back to Dashboard │");
-                    Console.WriteLine("└──────────────────────┘");
-                    Console.ResetColor();
-                    Console.Write("\nSelect an option: ");
-                    input = Console.ReadLine();
-                    switch (input)
-                    {
+                        bool usersItems = false; // We do not want to show the users items in the list loop
+                        item_index = 1;
+                        foreach (Item item in items) // list loop
+                        {
+                            item_index = Item.ShowItems(active_user, item, item_index, usersItems);
+                        }
 
-                        case "1": // 1.Filter
-                            Console.ForegroundColor = ConsoleColor.Blue;
-                            Menu.DrawHeaderBox("Filter items");
-                            Console.WriteLine(""); // WE ARE HERE
-                            Console.Write("Filter by users: ");
-                            string keyword = Console.ReadLine();
+                        input = null;
+                        Console.ForegroundColor = ConsoleColor.Blue;
+                        Console.WriteLine("┌──────────────────────┐");
+                        Console.WriteLine("│ 1) Filter list       │");
+                        Console.WriteLine("│ 2) Trade from list   │");
+                        Console.WriteLine("│ 0) Back to Dashboard │");
+                        Console.WriteLine("└──────────────────────┘");
+                        Console.ResetColor();
+                        Console.Write("\nSelect an option: ");
+                        input = Console.ReadLine();
+                        switch (input)
+                        {
+                            case "1": // 1.Filter
+                                bool keyword_found = false;
 
-                            bool keyword_found = false;
-                            item_index = 1;
-                            foreach (Item item in items)
-                            {
-                                if (keyword == item.Owner.Email)
+                                Console.ForegroundColor = ConsoleColor.Blue;
+                                Menu.DrawHeaderBox("Filter items");
+                                Console.WriteLine("");
+
+                                Console.Write("Filter by users: ");
+                                string keyword = Console.ReadLine();
+
+                                usersItems = false;
+                                item_index = 1;
+                                foreach (Item item in items)
+                                {
+                                    if (keyword == item.Owner.Email)
+                                    {
+                                        item_index = Item.ShowItems(active_user, item, item_index, usersItems);
+                                        keyword_found = true;
+                                    }
+                                }
+                                if (!keyword_found) // om inget keyword finns skriv ut detta 
+                                {
+                                    Console.ForegroundColor = ConsoleColor.Red;
+                                    Console.WriteLine($"\"{keyword}\" not found");
+                                    Console.ResetColor();
+                                }
+                                Utils.PressEnter();
+                                break;
+                            case "2": // 2.Trade
+                                Console.ForegroundColor = ConsoleColor.Blue;
+                                Menu.DrawHeaderBox("Trade items: Browse items");
+
+                                Console.WriteLine("Choose an item from the list\n");
+                                usersItems = false;
+                                item_index = 1;
+                                // Visar lista på items
+                                foreach (Item item in items)
                                 {
                                     item_index = Item.ShowItems(active_user, item, item_index, usersItems);
-                                    keyword_found = true;
                                 }
-                            }
-                            if (!keyword_found) // om inget keyword finns skriv ut detta 
-                            {
-                                Console.WriteLine($"\"{keyword}\" not found");
-                            }
-                            break;
-                        case "2": // 2.Trade
-                            Console.ForegroundColor = ConsoleColor.Blue;
-                            Menu.DrawHeaderBox("Trade items");
+                                Console.Write("Select an option: ");
 
-                            Console.WriteLine("Choose an item from the list");
-                            item_index = 1;
-                            foreach (Item item in items) // visar lista på items
-                            {
-                                item_index = Item.ShowItems(active_user, item, item_index, usersItems);
-                            }
-                            string? string_index_input = null;
-                            string_index_input = Console.ReadLine();
-                            int.TryParse(string_index_input, out int int_index_input);
-                            int count = 1; //räknare för att få fram vilket index som trade ligger på
-                            Menu.DrawHeaderBox("List of Items");
-                            foreach (Item item in items) // Skriver ut & hämtar värdet av vilket item som valdes
-                            {
-                                if (count == int_index_input && item.Owner.Email != active_user.Email) // har vilket index och listan filtreras utan active user 
+                                // Välj ett item genom siffra
+                                string? string_index_input = null;
+                                string_index_input = Console.ReadLine();
+                                int.TryParse(string_index_input, out int int_index_input);
+
+                                //räknare för att få fram vilket index som trade ligger på och sparar det i "recieverItem_temp" som senare används för TradeWindow()
+                                int count = 1;
+                                foreach (Item item in items) // Hämtar vald index & skriver ut valet
                                 {
-                                    recieverItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
-                                    Console.Write("   ");
-                                    recieverItem_temp.Get();
+                                    if (count == int_index_input && item.Owner.Email != active_user.Email) // har vilket index och listan filtreras utan active user 
+                                    {
+                                        recieverItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
+                                        recieverItem_temp.Get();
+                                    }
+                                    count++;
                                 }
-                                count++;
-                            }
-                            break;
-                        case "3":// 3.Back
-                            break;
 
+                                Console.ForegroundColor = ConsoleColor.Blue;
+                                Menu.DrawHeaderBox("Trade items: Your items");
+
+                                Console.WriteLine("Choose an item from the list\n");
+
+                                usersItems = true; // Only show the users items in a list
+
+                                item_index = 1;
+                                foreach (Item item in items) // list loop
+                                {
+                                    item_index = Item.ShowItems(active_user, item, item_index, usersItems);
+                                }
+                                Console.Write("Select an option: ");
+
+
+                                string_index_input = null;
+                                string_index_input = Console.ReadLine();
+
+                                int.TryParse(string_index_input, out int_index_input);
+
+                                count = 1;
+                                foreach (Item item in items) // Hämtar vald index & skriver ut valet
+                                {
+                                    if (count == int_index_input && item.Owner.Email == active_user.Email) // har vilket index och listan filtreras med bara active user 
+                                    {
+                                        senderItem_temp = new Item(item.Name, item.Description, item.Owner); // sparar ner reciever (of Trade's) item i en temp // eller det item som du vill byta med
+                                        senderItem_temp.Get();
+                                        Utils.PressEnter();
+                                    }
+                                    count++;
+                                }
+                                // active_trade = new Trade(senderItem_temp, recieverItem_temp, 1);
+
+                                if (senderItem_temp != null && recieverItem_temp != null)
+                                {
+                                    Menu.TradeWindow(active_trade.SenderItem, active_trade.RecieverItem);
+                                    trades.Add(new Trade(senderItem_temp, recieverItem_temp, 0));
+                                }
+                                break;
+                            case "3":// 3.Back
+                                dashboard_loop_browse = false;
+                                break;
+                        }
+                        break;
                     }
                     break;
                 case "3": // Manage Trade Requests // ShowDashboard
@@ -350,7 +406,10 @@ while (mainMenu_loop) // MainMenu
                     mainMenu_loop = false;
                     break;
                 default: // Default // ShowDashboard
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Oops! That wasn't a valid option. Try again.");
+                    Console.ResetColor();
+
                     break;
             }
         }

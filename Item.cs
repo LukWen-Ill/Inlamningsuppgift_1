@@ -18,7 +18,15 @@ class Item
 
     public void Get()
     {
-        Console.WriteLine($"{Name}\n   {Description}\n   Trader: {Owner.Email}\n");
+        Console.ForegroundColor = ConsoleColor.DarkCyan;
+        Console.Write($"{Owner.Email}");
+        Console.ResetColor();
+
+        Console.Write(" item: ");
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine($"{Name}");
+        Console.ResetColor();
+        Console.WriteLine($"   {Description}\n");
     }
     public static int ShowItems(User active_user, Item items, int count, bool usersItems)
     {
